@@ -4,6 +4,7 @@ import com.neobank.backend.DTO.UserRequestDTO;
 import com.neobank.backend.DTO.UserResponseDTO;
 import com.neobank.backend.Exceptions.UserNotFoundException;
 import com.neobank.backend.Mapper.UserMapper;
+import com.neobank.backend.Model.Role;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.UserRepository;
 import com.neobank.backend.Service.UserServiceImplementation;
@@ -33,6 +34,7 @@ public class UserImplementationTests {
                 .id(1L)
                 .email("test@example.com")
                 .firstName("Alex")
+                .role(Role.USER)
                 .build();
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
@@ -60,6 +62,7 @@ public class UserImplementationTests {
 
         User userEntity = UserMapper.toEntity(request);
         userEntity.setId(1L);
+        userEntity.setRole(Role.USER);
 
         when(userRepository.save(any(User.class))).thenReturn(userEntity);
 
@@ -73,8 +76,8 @@ public class UserImplementationTests {
     @Test
     void testGetAllUsers_shouldReturnList() {
         List<User> users = List.of(
-                User.builder().id(1L).email("a@example.com").build(),
-                User.builder().id(2L).email("b@example.com").build()
+                User.builder().id(1L).email("a@example.com").role(Role.USER).build(),
+                User.builder().id(2L).email("b@example.com").role(Role.ADMIN).build()
         );
 
         when(userRepository.findAll()).thenReturn(users);
@@ -87,7 +90,12 @@ public class UserImplementationTests {
 
     @Test
     void testUpdateUser_whenUserExists() {
-        User existingUser = User.builder().id(1L).email("old@example.com").firstName("Old").build();
+        User existingUser = User.builder()
+                .id(1L)
+                .email("old@example.com")
+                .firstName("Old")
+                .role(Role.USER)
+                .build();
 
         UserRequestDTO updatedDTO = new UserRequestDTO();
         updatedDTO.setEmail("new@example.com");

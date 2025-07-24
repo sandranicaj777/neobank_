@@ -27,9 +27,11 @@ public class AuthController {
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminOnly() {
-        return "Welcome Admin!";
+    public ResponseEntity<String> adminOnly() {
+        return ResponseEntity.ok("Welcome Admin!");
     }
+
+
 
     // 👇 Any logged-in user can access
     @GetMapping("/user")

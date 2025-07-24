@@ -17,8 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@EnableMethodSecurity(prePostEnabled = true)
 @Configuration
-@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
@@ -47,13 +47,19 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        // Public endpoints
+                        .requestMatchers("/h2-console/**", "/api/auth/login", "/api/auth/register").permitAll()
+
+                        // Role-based secured endpoints
+                        .requestMatchers("/api/auth/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/user").hasRole("USER")
+
+                        // All others need authentication
                         .anyRequest().authenticated()
                 )
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(sess -> sess
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .headers(headers -> headers.disable())
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 

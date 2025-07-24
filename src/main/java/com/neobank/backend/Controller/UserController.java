@@ -4,6 +4,7 @@ import com.neobank.backend.DTO.UserResponseDTO;
 import com.neobank.backend.DTO.UserRequestDTO;
 import com.neobank.backend.Service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class UserController {
         return ResponseEntity.ok(userService.createUser(userRequestDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());

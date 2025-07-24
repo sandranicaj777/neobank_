@@ -18,12 +18,20 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-
-    public AuthResponse register(AuthRequest request){
+    public AuthResponse register(AuthRequest request) {
         User user = UserMapper.toEntity(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+
+        if (user.getRole() == null) {
+            user.setRole(com.neobank.backend.Model.Role.USER);
+        }
+
         User savedUser = userRepository.save(user);
-        String jwtToken = jwtService.generateToken(savedUser.getEmail());
+
+
+        String jwtToken = jwtService.generateToken(savedUser.getEmail(), savedUser.getRole().name());
+
         return new AuthResponse(jwtToken, UserMapper.toDTO(savedUser));
     }
 
@@ -35,8 +43,9 @@ public class AuthService {
             throw new UserNotFoundException("Invalid email or password!");
         }
 
-        String jwtToken = jwtService.generateToken(user.getEmail());
+
+        String jwtToken = jwtService.generateToken(user.getEmail(), user.getRole().name());
+
         return new AuthResponse(jwtToken, UserMapper.toDTO(user));
     }
-
 }
