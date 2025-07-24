@@ -1,6 +1,9 @@
 package com.neobank.backend;
 
+import com.neobank.backend.DTO.UserRequestDTO;
+import com.neobank.backend.DTO.UserResponseDTO;
 import com.neobank.backend.Exceptions.UserNotFoundException;
+import com.neobank.backend.Mapper.UserMapper;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.UserRepository;
 import com.neobank.backend.Service.UserServiceImplementation;
@@ -22,11 +25,10 @@ public class UserImplementationTests {
     void setUp() {
         userRepository = mock(UserRepository.class);
         userService = new UserServiceImplementation(userRepository);
-
     }
 
     @Test
-    void testGetUserById_whenUserExists(){
+    void testGetUserById_whenUserExists() {
         User mockUser = User.builder()
                 .id(1L)
                 .email("test@example.com")
@@ -35,34 +37,37 @@ public class UserImplementationTests {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(mockUser));
 
-
-        User result = userService.getUserById(1L);
+        UserResponseDTO result = userService.getUserById(1L);
 
         assertNotNull(result);
         assertEquals("Alex", result.getFirstName());
-        verify(userRepository, times(1)).findById(1L);
+        verify(userRepository).findById(1L);
     }
 
     @Test
-    void testGetUserById_whenUserDoesNotExist(){
+    void testGetUserById_whenUserDoesNotExist() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
         verify(userRepository).findById(1L);
     }
+
     @Test
     void testCreateUser_shouldReturnSavedUser() {
-        User newUser = User.builder()
-                .email("new@example.com")
-                .firstName("New")
-                .build();
+        UserRequestDTO request = new UserRequestDTO();
+        request.setFirstName("New");
+        request.setEmail("new@example.com");
 
-        when(userRepository.save(newUser)).thenReturn(newUser);
+        User userEntity = UserMapper.toEntity(request);
+        userEntity.setId(1L);
 
-        User savedUser = userService.createUser(newUser);
+        when(userRepository.save(any(User.class))).thenReturn(userEntity);
 
-        assertEquals("New", savedUser.getFirstName());
-        verify(userRepository, times(1)).save(newUser);
+        UserResponseDTO response = userService.createUser(request);
+
+        assertEquals("New", response.getFirstName());
+        assertEquals("new@example.com", response.getEmail());
+        verify(userRepository).save(any(User.class));
     }
 
     @Test
@@ -74,7 +79,7 @@ public class UserImplementationTests {
 
         when(userRepository.findAll()).thenReturn(users);
 
-        List<User> result = userService.getAllUsers();
+        List<UserResponseDTO> result = userService.getAllUsers();
 
         assertEquals(2, result.size());
         verify(userRepository).findAll();
@@ -83,12 +88,15 @@ public class UserImplementationTests {
     @Test
     void testUpdateUser_whenUserExists() {
         User existingUser = User.builder().id(1L).email("old@example.com").firstName("Old").build();
-        User updatedUser = User.builder().email("new@example.com").firstName("New").build();
+
+        UserRequestDTO updatedDTO = new UserRequestDTO();
+        updatedDTO.setEmail("new@example.com");
+        updatedDTO.setFirstName("New");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User result = userService.updateUser(1L, updatedUser);
+        UserResponseDTO result = userService.updateUser(1L, updatedDTO);
 
         assertEquals("New", result.getFirstName());
         assertEquals("new@example.com", result.getEmail());
@@ -110,5 +118,4 @@ public class UserImplementationTests {
 
         assertThrows(UserNotFoundException.class, () -> userService.deleteUser(1L));
     }
-
 }

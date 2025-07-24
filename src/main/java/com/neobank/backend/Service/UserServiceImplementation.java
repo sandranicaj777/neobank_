@@ -1,6 +1,9 @@
 package com.neobank.backend.Service;
 
+import com.neobank.backend.DTO.UserRequestDTO;
+import com.neobank.backend.DTO.UserResponseDTO;
 import com.neobank.backend.Exceptions.UserNotFoundException;
+import com.neobank.backend.Mapper.UserMapper;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -17,47 +20,52 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public User createUser(User user) {
-       return userRepository.save(user);
+    public UserResponseDTO createUser(UserRequestDTO userRequestDTO) {
+      User user= UserMapper.toEntity(userRequestDTO);
+      User savedUser = userRepository.save(user);
+      return UserMapper.toDTO(savedUser);
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
+    public UserResponseDTO getUserById(Long id) {
+        User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
+        return UserMapper.toDTO(user);
     }
 
 
+
     @Override
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email)
+    public UserResponseDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
+        return UserMapper.toDTO(user);
+    }
+
+
+
+    @Override
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(UserMapper::toDTO)
+                .toList();
     }
 
 
     @Override
-    public List<User> getAllUsers() {
-       return userRepository.findAll();
-    }
-
-    @Override
-    public User updateUser(Long id, User updateUser) {
-       return userRepository.findById(id).map(existingUser -> {
-           existingUser.setFirstName(updateUser.getFirstName());
-           existingUser.setLastName(updateUser.getLastName());
-           existingUser.setEmail(updateUser.getEmail());
-           existingUser.setPassword(updateUser.getPassword());
-           existingUser.setPhoneNumber(updateUser.getPhoneNumber());
-           existingUser.setBirthDate(updateUser.getBirthDate());
-           existingUser.setAddress(updateUser.getAddress());
-           existingUser.setCity(updateUser.getCity());
-           existingUser.setPostalCode(updateUser.getPostalCode());
-           existingUser.setCountry(updateUser.getCountry());
-           existingUser.setProfilePictureUrl(updateUser.getProfilePictureUrl());
-           existingUser.setRole(updateUser.getRole());
-           existingUser.setStatus(updateUser.getStatus());
-           return userRepository.save(existingUser);
-       }).orElseThrow(() -> new RuntimeException("User not found"));
+    public UserResponseDTO updateUser(Long id, UserRequestDTO updateUser) {
+        return userRepository.findById(id).map(existingUser -> {
+            existingUser.setFirstName(updateUser.getFirstName());
+            existingUser.setLastName(updateUser.getLastName());
+            existingUser.setEmail(updateUser.getEmail());
+            existingUser.setPassword(updateUser.getPassword());
+            existingUser.setPhoneNumber(updateUser.getPhoneNumber());
+            existingUser.setAddress(updateUser.getAddress());
+            existingUser.setCity(updateUser.getCity());
+            existingUser.setPostalCode(updateUser.getPostalCode());
+            existingUser.setCountry(updateUser.getCountry());
+            return UserMapper.toDTO(userRepository.save(existingUser));
+        }).orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
 
     @Override
