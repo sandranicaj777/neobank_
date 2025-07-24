@@ -51,7 +51,8 @@ public class User implements UserDetails {
 
     private String profilePictureUrl;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;  // Default for new users
 
     private String status;
 

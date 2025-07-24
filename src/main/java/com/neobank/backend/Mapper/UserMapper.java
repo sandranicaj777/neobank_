@@ -3,6 +3,7 @@ package com.neobank.backend.Mapper;
 import com.neobank.backend.Auth.AuthRequest;
 import com.neobank.backend.DTO.UserRequestDTO;
 import com.neobank.backend.DTO.UserResponseDTO;
+import com.neobank.backend.Model.Role;
 import com.neobank.backend.Model.User;
 
 public class UserMapper {
@@ -19,7 +20,7 @@ public class UserMapper {
                 .postalCode(dto.getPostalCode())
                 .country(dto.getCountry())
                 .isVerified(false)
-                .role("USER")
+                .role(Role.USER)
                 .build();
 
     }
@@ -35,7 +36,7 @@ public class UserMapper {
         dto.setCity(user.getCity());
         dto.setPostalCode(user.getPostalCode());
         dto.setCountry(user.getCountry());
-        dto.setRole(user.getRole());
+        dto.setRole(user.getRole().name());
         dto.setIsVerified(user.getIsVerified());
         return dto;
     }
@@ -45,7 +46,7 @@ public class UserMapper {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(request.getPassword())
-                .role("USER")
+                .role(Role.USER)
                 .isVerified(false)
                 .build();
     }
