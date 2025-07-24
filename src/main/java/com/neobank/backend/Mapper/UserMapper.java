@@ -1,5 +1,6 @@
 package com.neobank.backend.Mapper;
 
+import com.neobank.backend.Auth.AuthRequest;
 import com.neobank.backend.DTO.UserRequestDTO;
 import com.neobank.backend.DTO.UserResponseDTO;
 import com.neobank.backend.Model.User;
@@ -38,5 +39,16 @@ public class UserMapper {
         dto.setIsVerified(user.getIsVerified());
         return dto;
     }
+    public static User toEntity(AuthRequest request) {
+        return User.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .email(request.getEmail())
+                .password(request.getPassword())
+                .role("USER")
+                .isVerified(false)
+                .build();
+    }
+
 
 }
