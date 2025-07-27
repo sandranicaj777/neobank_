@@ -2,10 +2,12 @@ package com.neobank.backend.Controller;
 
 import com.neobank.backend.DTO.TransactionRequestDTO;
 import com.neobank.backend.DTO.TransactionResponseDTO;
+import com.neobank.backend.Model.Transaction;
 import com.neobank.backend.Service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -20,9 +22,16 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    public TransactionResponseDTO createTransaction(@Valid @RequestBody TransactionRequestDTO request) {
-        return transactionService.createTransaction(request);
+    public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionRequestDTO dto) {
+        Transaction transaction = transactionService.createTransaction(
+                dto.getUserId(),
+                dto.getAmount(),
+                dto.getType(),
+                dto.getDescription()
+        );
+        return ResponseEntity.ok(transaction);
     }
+
 
     @GetMapping("/user/{userId}")
     public List<TransactionResponseDTO> getTransactionsByUser(@PathVariable Long userId) {

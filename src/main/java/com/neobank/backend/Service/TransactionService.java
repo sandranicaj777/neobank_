@@ -4,6 +4,7 @@ import com.neobank.backend.DTO.TransactionRequestDTO;
 import com.neobank.backend.DTO.TransactionResponseDTO;
 import com.neobank.backend.Exceptions.UserNotFoundException;
 import com.neobank.backend.Model.Transaction;
+import com.neobank.backend.Model.TransactionType;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.TransactionRepository;
 import com.neobank.backend.Repository.UserRepository;
@@ -23,22 +24,33 @@ public class TransactionService {
     private final UserRepository userRepository;
 
 
-    public TransactionResponseDTO createTransaction(TransactionRequestDTO request) {
-       User user= userRepository.findById(request.getUserId())
-               .orElseThrow(()-> new UserNotFoundException("User not found"));
+    public Transaction createTransaction(Long userId, BigDecimal amount, TransactionType type, String description) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-       Transaction transaction = Transaction.builder()
-               .user(user)
-               .amount(request.getAmount())
-               .type(request.getType())
-               .description(request.getDescription())
-               .timestamp(LocalDateTime.now())
-               .build();
+        if (type == TransactionType.WITHDRAWAL || type == TransactionType.TRANSFER) {
+            if (user.getBalance().compareTo(amount) < 0) {
+                throw new RuntimeException("Insufficient funds");
+            }
+            user.setBalance(user.getBalance().subtract(amount));
+        } else if (type == TransactionType.DEPOSIT) {
+            user.setBalance(user.getBalance().add(amount));
+        }
 
-       Transaction savedTransaction = transactionRepository.save(transaction);
-       return mapToResponse(savedTransaction);
+        userRepository.save(user);
 
+
+        Transaction transaction = Transaction.builder()
+                .user(user)
+                .amount(amount)
+                .type(type)
+                .description(description)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return transactionRepository.save(transaction);
     }
+
 
     public List<TransactionResponseDTO> getTransactionsByUser(Long userId) {
         User user= userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));

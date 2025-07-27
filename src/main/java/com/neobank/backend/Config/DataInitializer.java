@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
+
 @Configuration
 @RequiredArgsConstructor
 public class DataInitializer {
@@ -25,6 +27,7 @@ public class DataInitializer {
                         .email("admin@bank.com")
                         .password(passwordEncoder.encode("admin123"))
                         .role(Role.ADMIN)
+                        .balance(BigDecimal.ZERO)
                         .isVerified(true)
                         .build();
 

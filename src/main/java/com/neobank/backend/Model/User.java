@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -61,6 +62,10 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    private BigDecimal balance = BigDecimal.ZERO;
+
 
     @PrePersist
     protected void onCreate() {
