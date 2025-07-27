@@ -22,15 +22,22 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<Transaction> createTransaction(@RequestBody TransactionRequestDTO dto) {
-        Transaction transaction = transactionService.createTransaction(
-                dto.getUserId(),
-                dto.getAmount(),
-                dto.getType(),
-                dto.getDescription()
-        );
-        return ResponseEntity.ok(transaction);
+    public ResponseEntity<TransactionResponseDTO> createTransaction(@RequestBody TransactionRequestDTO dto) {
+        Transaction transaction = transactionService.createTransaction(dto);
+
+        TransactionResponseDTO response = new TransactionResponseDTO();
+        response.setId(transaction.getId());
+        response.setUserEmail(transaction.getUser().getEmail());
+        response.setRecipientEmail(transaction.getRecipient() != null ? transaction.getRecipient().getEmail() : null);
+        response.setAmount(transaction.getAmount());
+        response.setType(transaction.getType());
+        response.setDescription(transaction.getDescription());
+        response.setTimestamp(transaction.getTimestamp());
+
+        return ResponseEntity.ok(response);
     }
+
+
 
 
     @GetMapping("/user/{userId}")
@@ -53,7 +60,7 @@ public class TransactionController {
         return transactionService.getTransactionsAboveAmount(userId, amount);
     }
 
-    // ✅ NEW endpoint: Get transactions below a certain amount
+
     @GetMapping("/user/{userId}/below")
     public List<TransactionResponseDTO> getTransactionsBelowAmount(
             @PathVariable Long userId,

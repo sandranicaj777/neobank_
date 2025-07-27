@@ -8,8 +8,10 @@ import com.neobank.backend.Model.TransactionType;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.TransactionRepository;
 import com.neobank.backend.Repository.UserRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,32 +26,55 @@ public class TransactionService {
     private final UserRepository userRepository;
 
 
-    public Transaction createTransaction(Long userId, BigDecimal amount, TransactionType type, String description) {
-        User user = userRepository.findById(userId)
+
+    @Transactional
+    public Transaction createTransaction(TransactionRequestDTO dto) {
+        User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (type == TransactionType.WITHDRAWAL || type == TransactionType.TRANSFER) {
-            if (user.getBalance().compareTo(amount) < 0) {
-                throw new RuntimeException("Insufficient funds");
-            }
-            user.setBalance(user.getBalance().subtract(amount));
-        } else if (type == TransactionType.DEPOSIT) {
-            user.setBalance(user.getBalance().add(amount));
+
+        Transaction transaction = new Transaction();
+        transaction.setUser(user);
+        transaction.setAmount(dto.getAmount());
+        transaction.setType(dto.getType());
+        transaction.setDescription(dto.getDescription());
+        transaction.setTimestamp(LocalDateTime.now());
+
+        switch (dto.getType()) {
+            case DEPOSIT:
+                user.setBalance(user.getBalance().add(dto.getAmount()));
+                break;
+
+            case WITHDRAWAL:
+                if (user.getBalance().compareTo(dto.getAmount()) < 0) {
+                    throw new RuntimeException("Insufficient balance");
+                }
+                user.setBalance(user.getBalance().subtract(dto.getAmount()));
+                break;
+
+            case TRANSFER:
+                if (user.getBalance().compareTo(dto.getAmount()) < 0) {
+                    throw new RuntimeException("Insufficient balance for transfer");
+                }
+                // Find recipient
+                User recipient = userRepository.findById(dto.getRecipientId())
+                        .orElseThrow(() -> new RuntimeException("Recipient not found"));
+
+                // Adjust balances
+                user.setBalance(user.getBalance().subtract(dto.getAmount()));
+                recipient.setBalance(recipient.getBalance().add(dto.getAmount()));
+
+                // Set recipient on transaction
+                transaction.setRecipient(recipient);
+
+                userRepository.save(recipient); // save recipient balance update
+                break;
         }
 
         userRepository.save(user);
-
-
-        Transaction transaction = Transaction.builder()
-                .user(user)
-                .amount(amount)
-                .type(type)
-                .description(description)
-                .timestamp(LocalDateTime.now())
-                .build();
-
         return transactionRepository.save(transaction);
     }
+
 
 
     public List<TransactionResponseDTO> getTransactionsByUser(Long userId) {
@@ -87,13 +112,17 @@ public class TransactionService {
                 transaction.getId(),
                 transaction.getUser().getEmail(),
                 transaction.getAmount(),
+                transaction.getRecipient() != null ? transaction.getRecipient().getEmail() : null,
                 transaction.getType(),
                 transaction.getDescription(),
                 transaction.getTimestamp()
         );
     }
 
-    // ✅ Get transactions below a certain amount
+
+
+
+
     public List<TransactionResponseDTO> getTransactionsBelowAmount(Long userId, BigDecimal amount) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));

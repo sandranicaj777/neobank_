@@ -1,6 +1,9 @@
 package com.neobank.backend.DTO;
 
 import com.neobank.backend.Model.TransactionType;
+import com.neobank.backend.Model.User;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,6 +31,9 @@ public class TransactionRequestDTO {
 
 
     private String description;
+
+    private Long recipientId;
+
 
 
 }

@@ -63,6 +63,7 @@ public class User implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+    @Builder.Default
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
 

@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class UserRequestDTO {
 
@@ -29,4 +31,6 @@ public class UserRequestDTO {
     private String postalCode;
 
     private String country;
+
+
 }

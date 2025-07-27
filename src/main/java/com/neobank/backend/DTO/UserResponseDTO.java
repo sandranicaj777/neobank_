@@ -3,6 +3,8 @@ package com.neobank.backend.DTO;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class UserResponseDTO {
     private Long id;
@@ -16,6 +18,7 @@ public class UserResponseDTO {
     private String country;
     private String role;
     private Boolean isVerified;
+    private BigDecimal balance;
 
 
 

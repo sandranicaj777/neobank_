@@ -15,6 +15,7 @@ public class TransactionResponseDTO {
     private Long id;
     private String userEmail;
     private BigDecimal amount;
+    private String recipientEmail;
     private TransactionType type;
     private String description;
     private LocalDateTime timestamp;
