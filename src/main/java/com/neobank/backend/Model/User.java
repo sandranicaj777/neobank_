@@ -68,6 +68,8 @@ public class User implements UserDetails {
     private BigDecimal balance = BigDecimal.ZERO;
 
 
+
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();

@@ -6,6 +6,7 @@ import com.neobank.backend.Exceptions.UserNotFoundException;
 import com.neobank.backend.Mapper.UserMapper;
 import com.neobank.backend.Model.User;
 import com.neobank.backend.Repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,4 +76,24 @@ public class UserServiceImplementation implements UserService {
         }
         userRepository.deleteById(id);
 }
+
+    @Transactional
+    public UserResponseDTO freezeUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setStatus("FROZEN");
+        userRepository.save(user);
+        return UserMapper.toDTO(user);
+    }
+
+    @Transactional
+    public UserResponseDTO unfreezeUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setStatus("ACTIVE");
+        userRepository.save(user);
+        return UserMapper.toDTO(user);
+    }
+    
+
 }

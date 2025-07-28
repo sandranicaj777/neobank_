@@ -16,6 +16,8 @@ public interface UserService {
         List<UserResponseDTO> getAllUsers();
         UserResponseDTO updateUser(Long id, UserRequestDTO userRequestDTO);  // FIXED
         void deleteUser(Long id);
+        UserResponseDTO freezeUser(Long id);
+        UserResponseDTO unfreezeUser(Long id);
     }
 
 
