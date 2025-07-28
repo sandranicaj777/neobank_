@@ -2,6 +2,7 @@ package com.neobank.backend.Repository;
 
 
 import com.neobank.backend.Model.Transaction;
+import com.neobank.backend.Model.TransactionType;
 import com.neobank.backend.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -20,4 +21,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUserAndAmountGreaterThan(User user, BigDecimal amount);
 
     List<Transaction> findByUserAndAmountLessThan(User user, BigDecimal amount);
+
+    long countByType(TransactionType type);
 }
