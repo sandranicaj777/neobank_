@@ -3,9 +3,11 @@ package com.neobank.backend.Service;
 import com.neobank.backend.DTO.TransactionRequestDTO;
 import com.neobank.backend.DTO.TransactionResponseDTO;
 import com.neobank.backend.Exceptions.UserNotFoundException;
+import com.neobank.backend.Model.AuditLog;
 import com.neobank.backend.Model.Transaction;
 import com.neobank.backend.Model.TransactionType;
 import com.neobank.backend.Model.User;
+import com.neobank.backend.Repository.AuditLogRepository;
 import com.neobank.backend.Repository.TransactionRepository;
 import com.neobank.backend.Repository.UserRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +26,12 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
-
-
+    private final AuditLogRepository auditLogRepository;
 
     @Transactional
     public Transaction createTransaction(TransactionRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
 
         Transaction transaction = new Transaction();
         transaction.setUser(user);
@@ -41,38 +41,49 @@ public class TransactionService {
         transaction.setTimestamp(LocalDateTime.now());
 
         switch (dto.getType()) {
-            case DEPOSIT:
+            case DEPOSIT -> {
                 user.setBalance(user.getBalance().add(dto.getAmount()));
-                break;
-
-            case WITHDRAWAL:
+                logAction("DEPOSIT", user.getEmail(),
+                        "Deposited " + dto.getAmount() + " into account");
+            }
+            case WITHDRAWAL -> {
                 if (user.getBalance().compareTo(dto.getAmount()) < 0) {
                     throw new RuntimeException("Insufficient balance");
                 }
                 user.setBalance(user.getBalance().subtract(dto.getAmount()));
-                break;
-
-            case TRANSFER:
+                logAction("WITHDRAWAL", user.getEmail(),
+                        "Withdrew " + dto.getAmount() + " from account");
+            }
+            case TRANSFER -> {
                 if (user.getBalance().compareTo(dto.getAmount()) < 0) {
                     throw new RuntimeException("Insufficient balance for transfer");
                 }
-                // Find recipient
+
                 User recipient = userRepository.findById(dto.getRecipientId())
                         .orElseThrow(() -> new RuntimeException("Recipient not found"));
 
-                // Adjust balances
                 user.setBalance(user.getBalance().subtract(dto.getAmount()));
                 recipient.setBalance(recipient.getBalance().add(dto.getAmount()));
 
-                // Set recipient on transaction
                 transaction.setRecipient(recipient);
+                userRepository.save(recipient);
 
-                userRepository.save(recipient); // save recipient balance update
-                break;
+                logAction("TRANSFER", user.getEmail(),
+                        "Transferred " + dto.getAmount() + " to " + recipient.getEmail());
+            }
         }
 
         userRepository.save(user);
         return transactionRepository.save(transaction);
+    }
+
+    private void logAction(String action, String performedBy, String description) {
+        AuditLog log = AuditLog.builder()
+                .action(action)
+                .performedBy(performedBy)
+                .description(description)
+                .build();
+        auditLogRepository.save(log);
     }
 
 
