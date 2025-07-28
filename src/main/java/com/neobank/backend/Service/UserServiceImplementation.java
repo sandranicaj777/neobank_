@@ -47,10 +47,11 @@ public class UserServiceImplementation implements UserService {
 
     @Override
     public List<UserResponseDTO> getAllUsers() {
-        return userRepository.findAll().stream()
+        return userRepository.findByDeletedFalse().stream()
                 .map(UserMapper::toDTO)
                 .toList();
     }
+
 
 
     @Override
@@ -69,13 +70,15 @@ public class UserServiceImplementation implements UserService {
         }).orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
     }
 
-    @Override
+    @Transactional
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("User with ID" + id+" is not found.");
-        }
-        userRepository.deleteById(id);
-}
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.setDeleted(true); // Soft delete
+        userRepository.save(user);
+    }
+
+
 
     @Transactional
     public UserResponseDTO freezeUser(Long id) {
@@ -94,6 +97,6 @@ public class UserServiceImplementation implements UserService {
         userRepository.save(user);
         return UserMapper.toDTO(user);
     }
-    
+
 
 }

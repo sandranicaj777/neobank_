@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Entity
 @Table (name="users")
+@SQLDelete(sql = "UPDATE users SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -66,6 +70,10 @@ public class User implements UserDetails {
     @Builder.Default
     @Column(nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
 
 
