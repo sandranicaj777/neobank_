@@ -18,6 +18,7 @@ public interface UserService {
         void deleteUser(Long id);
         UserResponseDTO freezeUser(Long id);
         UserResponseDTO unfreezeUser(Long id);
+        User getUserEntityByEmail(String email);
     }
 
 
