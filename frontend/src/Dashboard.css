@@ -1,0 +1,145 @@
+.dashboard {
+    display: grid;
+    grid-template-columns: 220px 1fr 300px;
+    height: 100vh;
+    background-color: #0f0f0f;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .sidebar {
+    background-color: #121212;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+  }
+  
+  .sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #a78bfa;
+    text-align: center;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-menu li {
+    margin: 1rem 0;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 6px;
+    transition: background 0.3s ease;
+  }
+  
+  .sidebar-menu li:hover,
+  .sidebar-menu .active {
+    background-color: #2a2a2a;
+  }
+  
+  .main-content {
+    padding: 2rem;
+    overflow-y: auto;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .chart-box {
+    background-color: #181818;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0px 4px 15px rgba(167, 139, 250, 0.2);
+  }
+  
+  .chart-placeholder {
+    background-color: #222;
+    padding: 3rem;
+    text-align: center;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: #aaa;
+  }
+  
+  .transactions-box {
+    background-color: #181818;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(167, 139, 250, 0.2);
+  }
+  
+  .transactions-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .transactions-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  
+  .transactions-list li:last-child {
+    border-bottom: none;
+  }
+  
+  .type {
+    font-weight: 500;
+  }
+  
+  .amount {
+    color: #a78bfa;
+    font-weight: bold;
+  }
+  
+  .date {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  
+  .right-panel {
+    background-color: #121212;
+    padding: 2rem 1rem;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+  }
+  
+  .card-box {
+    background-color: #181818;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(167, 139, 250, 0.2);
+  }
+  
+  .card {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #6C63FF, #836FFF);
+    border-radius: 12px;
+    color: white;
+  }
+  
+  .card-type {
+    font-size: 1rem;
+  }
+  
+  .card-number {
+    font-size: 1.2rem;
+    margin: 10px 0;
+  }
+  
+  .card-balance {
+    font-size: 1.4rem;
+    font-weight: bold;
+  }
+  

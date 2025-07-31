@@ -1,0 +1,120 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body.register-body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #0f2027, #000000);
+    display: flex;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    color: white;
+  }
+  
+
+  .register-container {
+    background: radial-gradient(circle at top, #140b1b, #000000);
+    filter: drop-shadow(0 0 18px rgba(102, 126, 234, 0.7));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    border-radius: 14px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
+    width: 350%;
+    max-width: 450px;
+    animation: fadeInScale 0.6s ease forwards;
+    margin-right:200px;
+   
+  }
+  
+  .register-logo {
+    width: 140px;
+    margin-bottom: 1rem;
+  }
+  
+
+  .register-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .register-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 4px;
+    text-align: left;
+    color: #e0e0e0;
+  }
+  
+  .register-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background-color: #1f1f1f;
+    color: #ffffff;
+    font-size: 0.95rem;
+  }
+  
+  .register-input:focus {
+    border-color: #6C63FF;
+    outline: none;
+  }
+  
+  .register-input::placeholder {
+    color: #aaaaaa;
+  }
+  
+
+  .register-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(90deg, #6C63FF, #836FFF);
+    color: white;
+    margin-top: 8px;
+    box-shadow: 0 4px 10px #000105;
+    transition: 0.3s ease-in-out;
+  }
+  
+  .register-btn:hover {
+    background: linear-gradient(90deg, #7B68EE, #9A8BFF);
+    box-shadow: 0px 0px 12px rgba(123, 104, 238, 0.8);
+  }
+ 
+  .register-link {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #cccccc;
+  }
+  
+  .register-link a {
+    color: #FF6F61;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  
+
+  @keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  @media (min-width: 1200px) {
+    .auth-container {
+      max-width: 800px;
+      margin-right: 450px;
+    }
+  }
+  

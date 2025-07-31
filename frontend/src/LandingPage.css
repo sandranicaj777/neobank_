@@ -1,0 +1,94 @@
+
+body {
+    background: linear-gradient(270deg, #0f2027, #1a1a1a, #000000);
+    background-size: 400% 400%;
+    animation: gradientMove 20s ease infinite;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    text-align: left;
+    overflow: hidden;
+  }
+  
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+
+  .landing-logo {
+    display: block;
+    margin-left:200px;
+    width: 300px;
+    animation: fadeIn 1.2s ease-in-out;
+  }
+  
+
+  .landing-title {
+    font-size: 5rem;
+    font-weight: 500;
+    line-height: 1.3;
+    max-width: 800px;
+    margin: 20px auto;
+    animation: fadeInUp 1.5s ease;
+  }
+  
+
+  .landing-title span {
+    color: #a78bfa; 
+  }
+  
+
+  .get-started-btn {
+    margin-top: 20px;
+    margin-left:250px;
+    padding: 14px 40px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    background-color: #a78bfa; 
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(114, 201, 212, 0.5);
+    margin-bottom: 40px;
+  }
+  
+  .get-started-btn:hover {
+    background-color: #5fb2bc;
+    transform: scale(1.05);
+  }
+  
+  .money-bag {
+    position: absolute;
+    right: 2%;
+    bottom:2%;
+    width: 400px;
+    animation: float 3s ease-in-out infinite,  fadeInUp 1.5s ease;;
+  }
+
+
+  
+  .money-bag:hover {
+    transform: rotate(-3deg) scale(1.03);
+  }
+  
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+
+
