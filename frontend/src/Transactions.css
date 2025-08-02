@@ -162,3 +162,153 @@
     color: white;
   }
   
+  .new-tx-btn {
+    padding: 10px 18px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, #3c1053, #8b5cf6);
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s ease;
+  }
+  
+  .new-tx-btn:hover {
+    background: linear-gradient(135deg, #3c1053, #ad5389);
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 12px;
+    width: 350px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 10px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  
+  .modal-btn.confirm {
+    background: linear-gradient(135deg, #3c1053, #8b5cf6);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .modal-btn.confirm:hover{
+    background: linear-gradient(135deg, #3c1053, #ad5389);
+  }
+  
+  .modal-btn.cancel {
+    background: #444;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+
+.modal-title {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #a78bfa;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+
+  .modal-label {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 0.95rem;
+    display: block;
+  }
+  
+
+  .modal-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #1a1a1a;
+    color: white;
+    font-size: 1rem;
+  }
+  
+
+  .tx-type-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .type-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background-color: #1a1a1a;
+    color: #ddd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  
+  .type-btn:hover {
+    background-color: #2a2a2a;
+  }
+  
+  .type-btn.active.deposit {
+    background-color: rgba(74, 222, 128, 0.15);
+    border-color: #4ade80;
+    color: #4ade80;
+  }
+  
+  .type-btn.active.withdrawal {
+    background-color: rgba(248, 113, 113, 0.15);
+    border-color: #f87171;
+    color: #f87171;
+  }
+  
+  .type-btn.active.transfer {
+    background-color: rgba(96, 165, 250, 0.15);
+    border-color: #60a5fa;
+    color: #60a5fa;
+  }
+  
+
+  .type-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
