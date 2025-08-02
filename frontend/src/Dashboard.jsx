@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Dashboard.css";
 import { Home, CreditCard, User, Settings, Bell, ArrowDownLeft, ArrowUpRight, Send } from "lucide-react";
@@ -12,9 +13,8 @@ import {
 } from "recharts";
 
 export default function Dashboard() {
-  // 🆕 STATES
   const [cardNumber, setCardNumber] = useState("2984 5633 7859 4141");
-  const [cvc, setCvc] = useState("123"); // default CVC
+  const [cvc, setCvc] = useState("123"); 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCardBack, setShowCardBack] = useState(false);
 
@@ -52,19 +52,28 @@ export default function Dashboard() {
         <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
 
         <ul className="sidebar-menu">
-          <li className="active">
-            <Home className="icon" /> Overview
-          </li>
-          <li>
-            <CreditCard className="icon" /> Transactions
-          </li>
-          <li>
-            <User className="icon" /> Account
-          </li>
-          <li>
-            <Settings className="icon" /> Settings
-          </li>
-        </ul>
+  <li className="active">
+    <Link to="/dashboard">
+      <Home className="icon" /> Overview
+    </Link>
+  </li>
+  <li>
+    <Link to="/transactions">
+      <CreditCard className="icon" /> Transactions
+    </Link>
+  </li>
+  <li>
+    <Link to="/account">
+      <User className="icon" /> Account
+    </Link>
+  </li>
+  <li>
+    <Link to="/settings">
+      <Settings className="icon" /> Settings
+    </Link>
+  </li>
+</ul>
+
       </aside>
 
     

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import "./Dashboard.css";
 import "./Transactions.css";
@@ -63,11 +64,28 @@ export default function Transactions() {
       <aside className="sidebar">
         <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
         <ul className="sidebar-menu">
-          <li><Home className="icon" /> Overview</li>
-          <li className="active"><CreditCard className="icon" /> Transactions</li>
-          <li><User className="icon" /> Account</li>
-          <li><Settings className="icon" /> Settings</li>
-        </ul>
+  <li className="active">
+    <Link to="/dashboard">
+      <Home className="icon" /> Overview
+    </Link>
+  </li>
+  <li>
+    <Link to="/transactions">
+      <CreditCard className="icon" /> Transactions
+    </Link>
+  </li>
+  <li>
+    <Link to="/account">
+      <User className="icon" /> Account
+    </Link>
+  </li>
+  <li>
+    <Link to="/settings">
+      <Settings className="icon" /> Settings
+    </Link>
+  </li>
+</ul>
+
       </aside>
 
  
