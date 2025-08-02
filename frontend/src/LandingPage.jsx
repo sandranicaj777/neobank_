@@ -13,7 +13,7 @@ export default function LandingPage() {
       </h1>
 
       <button className="get-started-btn" onClick={() => navigate("/login")}>
-        Get Started 🚀
+        Get Started 
       </button>
 
       <img src="/moneybag.png" alt="Money Bag" className="money-bag" />

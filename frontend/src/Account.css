@@ -1,0 +1,179 @@
+.account-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #a78bfa;
+    margin-left:10px;
+    margin-top:10px;
+  }
+  
+  
+  
+  .account-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  .account-field label {
+    color: #aaa;
+  }
+  
+  .password-field {
+    position: relative;
+  }
+  
+  .eye-btn {
+    background: none;
+    border: none;
+    color: #a78bfa;
+    cursor: pointer;
+    position: absolute;
+    margin-left:350px;
+ 
+  }
+
+  .account-field p{
+    margin-left:20px;
+    margin-bottom:4px;
+    font-size:1rem;
+  }
+  
+  .account-balance {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #333;
+  }
+  
+  .account-balance h3 {
+    font-size: 1.8rem;
+    color: #a78bfa;
+  }
+
+  .account-balance p{
+    font-size:1.3rem;
+    color:greenyellow;
+    margin-top:10px;
+  }
+  
+  .edit-btn {
+    margin-top: 20px;
+    padding: 12px;
+    background: linear-gradient(135deg, #3c1053, #8b5cf6);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    width: 50%;
+    font-size: 1rem;
+    margin-left:260px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  
+  }
+
+  .edit-btn:hover {
+    background: linear-gradient(135deg, #3c1053, #ad5389);
+  }
+  
+  .balance-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;  
+    color:#a78bfa;
+    font-size: 1.4rem;
+  }
+
+
+  .edit-input {
+    background-color: #111;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px;
+    margin-left: 20px;
+    border-radius: 8px;
+    width: 60%;
+    font-size: 1rem;
+  }
+  
+  .edit-input:focus {
+    outline: none;
+    border-color: #a78bfa;
+    box-shadow: 0 0 5px #a78bfa;
+  }
+  
+  
+  .account-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+
+  .account-field label {
+    color: #aaa;
+    width: 150px;       
+    text-align: right; 
+    margin-right: 15px;
+  }
+  
+
+  .edit-input {
+    background-color: #111;
+    border: 1px solid #333;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    width: 60%;
+    font-size: 1rem;
+  }
+  
+  .edit-input:focus {
+    outline: none;
+    border-color: #a78bfa;
+    box-shadow: 0 0 5px #a78bfa;
+  }
+
+  .iconAccount{
+    height:40px;
+    width:40xp;
+    margin-top:5px;
+  }
+
+  .edit-field input {
+    width: 100%;
+    padding: 10px;
+    margin-left: 10px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+
+  .edit-field input:focus {
+    outline: none;
+    border-color: #a78bfa;
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.7);
+  }
+  
+  .account-balance {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
+    text-align: left;
+    animation: pulse 5s infinite;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+
+
+  .textColor1{
+    margin-bottom:20px;
+  }

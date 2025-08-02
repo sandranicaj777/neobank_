@@ -1,58 +1,202 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./Dashboard.css";
+import { Home, CreditCard, User, Settings, Bell, ArrowDownLeft, ArrowUpRight, Send } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 export default function Dashboard() {
-  const [transactions, setTransactions] = useState([
-    { type: "Deposit", amount: 56.50, date: "Today" },
-    { type: "Withdrawal", amount: 70.00, date: "Yesterday" },
-    { type: "Deposit", amount: 100.00, date: "2 days ago" }
-  ]);
+  // 🆕 STATES
+  const [cardNumber, setCardNumber] = useState("2984 5633 7859 4141");
+  const [cvc, setCvc] = useState("123"); // default CVC
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showCardBack, setShowCardBack] = useState(false);
+
+  const transactions = [
+    { type: "Deposit", amount: 56.50, date: "28 Jul 2022, 21:40", icon: <ArrowDownLeft className="tx-icon deposit" /> },
+    { type: "Deposit", amount: 2.50, date: "28 Jul 2022, 21:40", icon: <ArrowDownLeft className="tx-icon deposit" /> },
+    { type: "Withdrawal", amount: 70.00, date: "28 Jul 2022, 21:40", icon: <ArrowUpRight className="tx-icon withdrawal" /> },
+    { type: "Transfer", amount: 100.00, date: "28 Jul 2022, 21:40", icon: <Send className="tx-icon transfer" /> }
+  ];
+
+ 
+  const generateCardNumber = () => {
+    let num = "";
+    for (let i = 0; i < 16; i++) {
+      num += Math.floor(Math.random() * 10);
+      if ((i + 1) % 4 === 0 && i !== 15) num += " ";
+    }
+    return num;
+  };
+
+ 
+  const generateCVC = () => Math.floor(100 + Math.random() * 900).toString();
+
+
+  const confirmNewCard = () => {
+    setCardNumber(generateCardNumber());
+    setCvc(generateCVC());
+    setShowAddModal(false);
+  };
 
   return (
     <div className="dashboard">
+     
       <aside className="sidebar">
-        <h2 className="sidebar-logo">NeoBank</h2>
+        <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
+
         <ul className="sidebar-menu">
-          <li className="active">🏠 Overview</li>
-          <li>💳 Payments</li>
-          <li>👤 Account</li>
-          <li>⚙️ Settings</li>
+          <li className="active">
+            <Home className="icon" /> Overview
+          </li>
+          <li>
+            <CreditCard className="icon" /> Transactions
+          </li>
+          <li>
+            <User className="icon" /> Account
+          </li>
+          <li>
+            <Settings className="icon" /> Settings
+          </li>
         </ul>
       </aside>
 
+    
+      <div className="main">
+
+        <header className="header">
+          <div className="header-right">
+            <Bell className="notif-icon" />
+          </div>
+        </header>
+
+
+        <main className="content">
+          <div className="content-box">
+            <div className="dashboard-layout">
+
+     
+              <div className="left-side">
+
+        
+                <div className="transactions">
+                  <h2>Recent Transactions</h2>
+                  <div className="transactions-list">
+                    {transactions.map((tx, index) => (
+                      <div key={index} className="transaction-row">
+                        <div className="tx-left">
+                          {tx.icon}
+                          <div className="tx-details">
+                            <span className="tx-type">{tx.type}</span>
+                            <span className="tx-date">{tx.date}</span>
+                          </div>
+                        </div>
+                        <div className="tx-right">
+                          <span className="tx-amount">${tx.amount.toFixed(2)}</span>
+                          <span className="tx-menu">⋯</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+            
+                <div className="virtualCards">
+                  <h2 className="vcH2">Virtual Cards</h2>
+                  <div className="cards-grid">
+
+                    <div className="virtual-card" onClick={() => setShowCardBack(true)}>
+                      <img src="/tx.png" alt="Card Chip" className="card-chip-img" />
+                      <div className="card-number">{cardNumber}</div>
+                      <div className="card-info">
+                        <div>
+                          <span className="label">CARD HOLDER</span>
+                          <h4>Hello, user!</h4>
+                        </div>
+                        <img src="/mc.png" alt="Mastercard Logo" className="card-logo-img" />
+                      </div>
+                    </div>
+
+                
+                    <div className="virtual-card add-card" onClick={() => setShowAddModal(true)}>
+                      <div className="plus-sign">+</div>
+                      <p>Add New Card</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          
+              <div className="right-side">
       
-      <main className="main-content">
-        <h1 className="page-title">Overview</h1>
+                <div className="chart-box">
+                  <h2>Spent This Day</h2>
+                  <ResponsiveContainer width="100%" height={400}>
+                    <LineChart
+                      data={[
+                        { day: "Sun", amount: 120 },
+                        { day: "Mon", amount: 180 },
+                        { day: "Tue", amount: 260 },
+                        { day: "Wed", amount: 150 },
+                        { day: "Thu", amount: 100 },
+                        { day: "Fri", amount: 170 },
+                        { day: "Sat", amount: 140 }
+                      ]}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                      <XAxis dataKey="day" stroke="#aaa" />
+                      <YAxis hide />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="amount" stroke="#a78bfa" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 4 }} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
 
-        <div className="chart-box">
-          <h3>Spending Overview</h3>
-          <div className="chart-placeholder">📊 Chart Coming Soon</div>
-        </div>
+            
+                <div className="available-cards">
+                  <h2>Total balance:</h2>
+                  <div className="card-summary">
+                    <p><strong>98,500</strong> USD •••• 4141</p>
+                  </div>
+                </div>
+              </div>
 
-        <div className="transactions-box">
-          <h3>Recent Transactions</h3>
-          <ul className="transactions-list">
-            {transactions.map((t, i) => (
-              <li key={i}>
-                <span className="type">{t.type}</span>
-                <span className="amount">${t.amount.toFixed(2)}</span>
-                <span className="date">{t.date}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </main>
+            </div>
+          </div>
+        </main>
+      </div>
 
-      <aside className="right-panel">
-        <div className="card-box">
-          <h3>Available Cards</h3>
-          <div className="card">
-            <p className="card-type">💳 Virtual Card</p>
-            <p className="card-number">**** **** **** 1234</p>
-            <p className="card-balance">$5,240.00</p>
+      {showAddModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Generate a new virtual card?</h2>
+            <div className="modal-buttons">
+              <button className="modal-btn confirm" onClick={confirmNewCard}>Generate</button>
+              <button className="modal-btn cancel" onClick={() => setShowAddModal(false)}>Cancel</button>
+            </div>
           </div>
         </div>
-      </aside>
+      )}
+
+      
+      {showCardBack && (
+        <div className="modal-overlay" onClick={() => setShowCardBack(false)}>
+          <div className="modal-card-back" onClick={(e) => e.stopPropagation()}>
+            <div className="black-strip"></div>
+            <div className="white-box">
+              <span className="cvc-label">CVC</span>
+              <span className="cvc-number">{cvc}</span>
+            </div>
+            <button className="modal-btn cancel" onClick={() => setShowCardBack(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
