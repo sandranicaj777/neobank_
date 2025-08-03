@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "./auth.css"
+import "./auth.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,12 +12,22 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      // ✅ Call backend login endpoint
       const res = await axios.post("http://localhost:8080/api/auth/login", {
         email,
         password,
       });
+
+      // ✅ Save JWT token + user details
       localStorage.setItem("token", res.data.token);
-      navigate("/dashboard");
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // ✅ Redirect based on role or email
+      if (res.data.user.role === "ADMIN" || res.data.user.email === "admin@bank.com") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
     } catch (err) {
       setError("Invalid email or password");
       console.error(err);
