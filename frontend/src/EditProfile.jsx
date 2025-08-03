@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Home, CreditCard, User, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -28,8 +29,7 @@ export default function EditProfile() {
 
   const handleSave = () => {
     console.log("Updated user data:", user);
-    // ✅ Here you’d send a PUT request to your backend endpoint
-    // fetch(`/api/users/${user.id}`, { method: "PUT", body: JSON.stringify(user) })
+
 
     navigate("/account"); 
   };
@@ -40,17 +40,25 @@ export default function EditProfile() {
       <aside className="sidebar">
         <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
         <ul className="sidebar-menu">
-          <li>
-            <Home className="icon" /> Overview
-          </li>
-          <li>
-            <CreditCard className="icon" /> Transactions
-          </li>
           <li className="active">
-            <User className="icon" /> Account
+            <Link to="/dashboard">
+              <Home className="icon" /> Overview
+            </Link>
           </li>
           <li>
-            <Settings className="icon" /> Settings
+            <Link to="/transactions">
+              <CreditCard className="icon" /> Transactions
+            </Link>
+          </li>
+          <li>
+            <Link to="/account">
+              <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/settings">
+              <Settings className="icon" /> Settings
+            </Link>
           </li>
         </ul>
       </aside>
