@@ -18,6 +18,11 @@ export default function Dashboard() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCardBack, setShowCardBack] = useState(false);
 
+  
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
+
   const transactions = [
     { type: "Deposit", amount: 56.50, date: "28 Jul 2022, 21:40", icon: <ArrowDownLeft className="tx-icon deposit" /> },
     { type: "Deposit", amount: 2.50, date: "28 Jul 2022, 21:40", icon: <ArrowDownLeft className="tx-icon deposit" /> },
@@ -25,7 +30,6 @@ export default function Dashboard() {
     { type: "Transfer", amount: 100.00, date: "28 Jul 2022, 21:40", icon: <Send className="tx-icon transfer" /> }
   ];
 
- 
   const generateCardNumber = () => {
     let num = "";
     for (let i = 0; i < 16; i++) {
@@ -35,64 +39,93 @@ export default function Dashboard() {
     return num;
   };
 
- 
   const generateCVC = () => Math.floor(100 + Math.random() * 900).toString();
-
 
   const confirmNewCard = () => {
     setCardNumber(generateCardNumber());
     setCvc(generateCVC());
     setShowAddModal(false);
+
+
+    setNotifications((prev) => [
+      ...prev,
+      { id: Date.now(), message: "A new virtual card has been created!", read: false }
+    ]);
+    setUnreadCount((prev) => prev + 1);
+  };
+
+
+  const handleBellClick = () => {
+    setShowNotifications(!showNotifications);
+    if (unreadCount > 0) {
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+      setUnreadCount(0);
+    }
   };
 
   return (
     <div className="dashboard">
-     
+
       <aside className="sidebar">
         <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
 
         <ul className="sidebar-menu">
-  <li className="active">
-    <Link to="/dashboard">
-      <Home className="icon" /> Overview
-    </Link>
-  </li>
-  <li>
-    <Link to="/transactions">
-      <CreditCard className="icon" /> Transactions
-    </Link>
-  </li>
-  <li>
-    <Link to="/account">
-      <User className="icon" /> Account
-    </Link>
-  </li>
-  <li>
-    <Link to="/settings">
-      <Settings className="icon" /> Settings
-    </Link>
-  </li>
-</ul>
-
+          <li className="active">
+            <Link to="/dashboard">
+              <Home className="icon" /> Overview
+            </Link>
+          </li>
+          <li>
+            <Link to="/transactions">
+              <CreditCard className="icon" /> Transactions
+            </Link>
+          </li>
+          <li>
+            <Link to="/account">
+              <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/settings">
+              <Settings className="icon" /> Settings
+            </Link>
+          </li>
+        </ul>
       </aside>
 
-    
-      <div className="main">
 
+      <div className="main">
         <header className="header">
           <div className="header-right">
-            <Bell className="notif-icon" />
+         
+            <div className="notification-wrapper" onClick={handleBellClick}>
+              <Bell className="notif-icon" />
+              {unreadCount > 0 && <span className="notif-badge">{unreadCount}</span>}
+            </div>
+
+    
+            {showNotifications && (
+              <div className="notifications-dropdown">
+                {notifications.length === 0 ? (
+                  <p className="no-notifications">No new notifications</p>
+                ) : (
+                  notifications.map((n) => (
+                    <div key={n.id} className={`notification-item ${n.read ? "read" : ""}`}>
+                      {n.message}
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
           </div>
         </header>
-
 
         <main className="content">
           <div className="content-box">
             <div className="dashboard-layout">
 
-     
+  
               <div className="left-side">
-
         
                 <div className="transactions">
                   <h2>Recent Transactions</h2>
@@ -115,11 +148,11 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-            
+       
                 <div className="virtualCards">
                   <h2 className="vcH2">Virtual Cards</h2>
                   <div className="cards-grid">
-
+             
                     <div className="virtual-card" onClick={() => setShowCardBack(true)}>
                       <img src="/tx.png" alt="Card Chip" className="card-chip-img" />
                       <div className="card-number">{cardNumber}</div>
@@ -141,9 +174,9 @@ export default function Dashboard() {
                 </div>
               </div>
 
-          
+           
               <div className="right-side">
-      
+  
                 <div className="chart-box">
                   <h2>Spent This Day</h2>
                   <ResponsiveContainer width="100%" height={400}>
@@ -167,7 +200,6 @@ export default function Dashboard() {
                   </ResponsiveContainer>
                 </div>
 
-            
                 <div className="available-cards">
                   <h2>Total balance:</h2>
                   <div className="card-summary">
@@ -181,6 +213,7 @@ export default function Dashboard() {
         </main>
       </div>
 
+  
       {showAddModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -193,7 +226,7 @@ export default function Dashboard() {
         </div>
       )}
 
-      
+   
       {showCardBack && (
         <div className="modal-overlay" onClick={() => setShowCardBack(false)}>
           <div className="modal-card-back" onClick={(e) => e.stopPropagation()}>

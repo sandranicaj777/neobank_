@@ -1,9 +1,18 @@
-// src/AdminLayout.jsx
-import { Home, Users, CreditCard, FileText } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Home, Users, CreditCard, FileText, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Admin.css";
 
 export default function AdminLayout({ children }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+
+    localStorage.removeItem("adminToken");
+
+    
+    navigate("/login");
+  };
+
   return (
     <div className="admin-dashboard">
       <aside className="admin-sidebar">
@@ -31,6 +40,11 @@ export default function AdminLayout({ children }) {
             </Link>
           </li>
         </ul>
+
+       
+        <button className="logout-btn" onClick={handleLogout}>
+          <LogOut className="icon" /> Logout
+        </button>
       </aside>
 
       <div className="admin-main">{children}</div>

@@ -3,7 +3,7 @@ import AdminLayout from "./AdminLayout";
 
 export default function AdminUsers() {
   const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState(null); // "freeze" or "delete"
+  const [modalType, setModalType] = useState(null); 
   const [selectedUser, setSelectedUser] = useState(null);
 
   const users = [
@@ -60,7 +60,7 @@ export default function AdminUsers() {
         </tbody>
       </table>
 
-      {/* ✅ Confirmation Modal */}
+
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -71,7 +71,7 @@ export default function AdminUsers() {
             </h2>
             <p>
               {modalType === "delete"
-                ? "⚠️ This action cannot be undone."
+                ? "This action cannot be undone."
                 : "Are you sure you want to freeze this account?"}
             </p>
 

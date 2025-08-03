@@ -1,4 +1,4 @@
-// src/AdminDashboard.jsx
+
 import AdminLayout from "./AdminLayout";
 
 export default function AdminDashboard() {

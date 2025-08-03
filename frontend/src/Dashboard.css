@@ -609,3 +609,56 @@
     color: #a78bfa;
    
   }
+
+  .notification-wrapper {
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .notif-badge {
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: -5px;
+    right: -5px;
+  }
+  
+  .notifications-dropdown {
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    width: 250px;
+    background: #222;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    padding: 10px;
+    z-index: 100;
+  }
+  
+  .notification-item {
+    padding: 8px;
+    border-bottom: 1px solid #333;
+    color: #fff;
+  }
+  
+  .notification-item:last-child {
+    border-bottom: none;
+  }
+  
+  .notification-item.read {
+    opacity: 0.6;
+  }
+  
+  .no-notifications {
+    text-align: center;
+    color: #aaa;
+    padding: 8px;
+  }
+  
