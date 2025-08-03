@@ -257,10 +257,8 @@
   }
   
   .virtual-card-container h2 {
-    margin-top:40px;
     color: #a78bfa;
     font-size: 22px;
-    margin-bottom: 25px;
   }
   
   .virtual-card-container {
@@ -270,7 +268,7 @@
   .virtual-card-container h2 {
     color: #a78bfa;
     font-size: 22px;
-    margin-bottom: 20px;
+ 
   }
   
   .card-row {
@@ -577,9 +575,9 @@
     transform: scale(1.05);
   }
 
-  .vcH2{
+  .h2vcH2{
     color:#a78bfa;
-    margin-top:20px;
+    margin-top:30px;
   }
 
   .sidebar-menu li a {
@@ -660,5 +658,13 @@
     text-align: center;
     color: #aaa;
     padding: 8px;
+  }
+  
+  .virtualCards .vcH2 {
+    color: #a78bfa;
+    font-size: 20px;
+    margin-top: 20px !important; 
+
+    margin-left: 10px;
   }
   
