@@ -18,19 +18,19 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    // ✅ Get total balance in the system
+
     @GetMapping("/total-balance")
     public BigDecimal getTotalBalance() {
         return adminService.getTotalBalance();
     }
 
-    // ✅ Get user statistics (active, frozen, deleted)
+
     @GetMapping("/user-stats")
     public Map<String, Long> getUserStats() {
         return adminService.getUserStats();
     }
 
-    // ✅ Get last X transactions (default 10)
+
     @GetMapping("/recent-transactions")
     public List<Transaction> getRecentTransactions(@RequestParam(defaultValue = "10") int limit) {
         return adminService.getRecentTransactions(limit);

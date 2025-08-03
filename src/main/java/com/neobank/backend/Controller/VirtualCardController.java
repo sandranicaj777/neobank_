@@ -74,6 +74,7 @@ public class VirtualCardController {
         return ResponseEntity.ok("Card deleted successfully");
     }
 
+
     private String maskCardNumber(String cardNumber) {
         if (cardNumber == null || cardNumber.length() < 4) return "****";
         return "**** **** **** " + cardNumber.substring(cardNumber.length() - 4);

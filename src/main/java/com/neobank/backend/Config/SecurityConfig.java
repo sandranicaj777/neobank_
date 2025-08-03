@@ -1,6 +1,5 @@
 package com.neobank.backend.Config;
 
-
 import com.neobank.backend.Security.CustomUserDetailService;
 import com.neobank.backend.Security.JwtAuthFilter;
 import com.neobank.backend.Security.JwtService;
@@ -46,8 +45,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {})
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
                         .requestMatchers(
                                 "/h2-console/**",
                                 "/api/auth/login",
@@ -58,15 +58,14 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-                        // Role-based secured endpoints
+
+
                         .requestMatchers("/api/auth/admin").hasAuthority("ADMIN")
-                        .requestMatchers("/api/auth/user").hasAuthority("USER")
+                        .requestMatchers("/api/auth/user").hasAnyAuthority("USER", "ADMIN")
 
 
-                        // All others need authentication
                         .anyRequest().authenticated()
                 )
-                .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
