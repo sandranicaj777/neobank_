@@ -14,7 +14,6 @@ export default function Register() {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-
   useEffect(() => {
     document.body.classList.add("register-body");
     return () => {
@@ -31,16 +30,26 @@ export default function Register() {
     }
 
     try {
-      await axios.post("http://localhost:8080/api/users", {
+      const res = await axios.post("http://localhost:8080/api/auth/register", {
         firstName,
         lastName,
         email,
         password,
         phoneNumber
       });
-      setSuccess("Registration successful! You can now log in.");
+
+      // ✅ Save token to localStorage
+      localStorage.setItem("token", res.data.jwtToken);
+
+      // ✅ (Optional) Save user info too
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      setSuccess("Registration successful! Redirecting...");
       setError("");
-      setTimeout(() => navigate("/login"), 2000);
+
+      // ✅ Redirect immediately (or after 2 sec)
+      setTimeout(() => navigate("/dashboard"), 1500);
+
     } catch (err) {
       setError("Registration failed. Please try again.");
       setSuccess("");
@@ -52,8 +61,6 @@ export default function Register() {
     <main className="register-container">
       <img className="register-logo" src="/logo.png" alt="Neo Bank Logo" />
       <form onSubmit={handleRegister} className="register-form">
-        
-
         <div>
           <label className="register-label">First Name</label>
           <input 
@@ -65,7 +72,6 @@ export default function Register() {
           />
         </div>
 
-   
         <div>
           <label className="register-label">Last Name</label>
           <input 
@@ -76,7 +82,6 @@ export default function Register() {
             required 
           />
         </div>
-
 
         <div>
           <label className="register-label">Email</label>
@@ -89,7 +94,6 @@ export default function Register() {
           />
         </div>
 
- 
         <div>
           <label className="register-label">Password</label>
           <input 
@@ -100,7 +104,6 @@ export default function Register() {
             required 
           />
         </div>
-
 
         <div>
           <label className="register-label">Repeat Password</label>
@@ -113,8 +116,6 @@ export default function Register() {
           />
         </div>
 
-
-    
         <div>
           <label className="register-label">Phone Number</label>
           <input 
