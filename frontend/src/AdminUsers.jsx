@@ -17,7 +17,10 @@ export default function AdminUsers() {
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:8080/api/users", {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Cache-Control": "no-cache",
+        },
       });
       setUsers(res.data);
     } catch (err) {
@@ -45,22 +48,47 @@ export default function AdminUsers() {
         await axios.patch(
           `http://localhost:8080/api/users/${selectedUser.id}/freeze`,
           {},
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Cache-Control": "no-cache",
+            },
+          }
+        );
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === selectedUser.id ? { ...u, status: "FROZEN" } : u
+          )
         );
       } else if (modalType === "unfreeze") {
         await axios.patch(
           `http://localhost:8080/api/users/${selectedUser.id}/unfreeze`,
           {},
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Cache-Control": "no-cache",
+            },
+          }
+        );
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.id === selectedUser.id ? { ...u, status: "ACTIVE" } : u
+          )
         );
       } else if (modalType === "delete") {
         await axios.delete(
           `http://localhost:8080/api/users/${selectedUser.id}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Cache-Control": "no-cache",
+            },
+          }
         );
+        setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
       }
 
-      await fetchUsers();
       closeModal();
     } catch (err) {
       console.error("Error performing action", err);
@@ -88,7 +116,7 @@ export default function AdminUsers() {
                 <td>{u.email}</td>
                 <td>{u.status}</td>
                 <td>
-                  {u.status === "ACTIVE" ? (
+                  {u.status?.toUpperCase() === "ACTIVE" ? (
                     <button
                       className="action-btn"
                       onClick={() => openModal(u, "freeze")}
