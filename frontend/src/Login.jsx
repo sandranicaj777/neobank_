@@ -12,17 +12,17 @@ export default function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // ✅ Call backend login endpoint
+  
       const res = await axios.post("http://localhost:8080/api/auth/login", {
         email,
         password,
       });
 
-      // ✅ Save JWT token + user details
-      localStorage.setItem("token", res.data.token);
+    
+      localStorage.setItem("token", res.data.jwtToken);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      // ✅ Redirect based on role or email
+      
       if (res.data.user.role === "ADMIN" || res.data.user.email === "admin@bank.com") {
         navigate("/admin");
       } else {

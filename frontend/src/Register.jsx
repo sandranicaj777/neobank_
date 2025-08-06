@@ -38,16 +38,16 @@ export default function Register() {
         phoneNumber
       });
 
-      // ✅ Save token to localStorage
+   
       localStorage.setItem("token", res.data.jwtToken);
 
-      // ✅ (Optional) Save user info too
+ 
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
       setSuccess("Registration successful! Redirecting...");
       setError("");
 
-      // ✅ Redirect immediately (or after 2 sec)
+  
       setTimeout(() => navigate("/dashboard"), 1500);
 
     } catch (err) {

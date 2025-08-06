@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import "./Dashboard.css";
 import "./Transactions.css";
 import {
@@ -15,80 +16,130 @@ import {
 } from "lucide-react";
 
 export default function Transactions() {
-  const [transactions, setTransactions] = useState([
-    { type: "Deposit", amount: 56.5, date: "28 Jul 2022, 21:40", icon: <ArrowDownLeft className="tx-icon deposit" /> },
-    { type: "Deposit", amount: 2.5, date: "28 Jul 2022, 21:40", icon: <ArrowDownLeft className="tx-icon deposit" /> },
-    { type: "Withdrawal", amount: 70.0, date: "28 Jul 2022, 21:40", icon: <ArrowUpRight className="tx-icon withdrawal" /> },
-    { type: "Transfer", amount: 100.0, date: "28 Jul 2022, 21:40", icon: <Send className="tx-icon transfer" /> }
-  ]);
-
+  const [transactions, setTransactions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [type, setType] = useState("Deposit");
   const [amount, setAmount] = useState("");
   const [recipientId, setRecipientId] = useState("");
+  const [loading, setLoading] = useState(true);
 
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
-  const handleTransaction = () => {
+  // Fetch transactions from backend
+  useEffect(() => {
+    if (!user || !token) return;
+
+    const fetchTransactions = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/transactions/user/${user.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Map backend response to include correct icons
+        const mappedTransactions = res.data.map((tx) => ({
+          ...tx,
+          icon:
+            tx.type === "DEPOSIT"
+              ? <ArrowDownLeft className="tx-icon deposit" />
+              : tx.type === "WITHDRAWAL"
+              ? <ArrowUpRight className="tx-icon withdrawal" />
+              : <Send className="tx-icon transfer" />,
+          date: new Date(tx.timestamp).toLocaleString(),
+        }));
+
+        setTransactions(mappedTransactions);
+      } catch (err) {
+        console.error("Failed to fetch transactions", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTransactions();
+  }, [user, token]);
+
+  // Handle creating a new transaction
+  const handleTransaction = async () => {
     if (!amount || parseFloat(amount) <= 0) {
       alert("Enter a valid amount");
       return;
     }
 
-    if ((type === "Withdrawal" || type === "Transfer") && parseFloat(amount) > 1000) {
-      alert("Insufficient balance!");
-      return;
+    try {
+      const dto = {
+        userId: user.id,
+        amount: parseFloat(amount),
+        type: type.toUpperCase(),
+        description: `${type} of $${amount}`,
+        recipientId: type === "Transfer" ? parseInt(recipientId) : null,
+      };
+
+      const res = await axios.post(
+        "http://localhost:8080/api/transactions",
+        dto,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const newTx = {
+        ...res.data,
+        icon:
+          res.data.type === "DEPOSIT"
+            ? <ArrowDownLeft className="tx-icon deposit" />
+            : res.data.type === "WITHDRAWAL"
+            ? <ArrowUpRight className="tx-icon withdrawal" />
+            : <Send className="tx-icon transfer" />,
+        date: new Date(res.data.timestamp).toLocaleString(),
+      };
+
+      setTransactions([newTx, ...transactions]);
+      setShowModal(false);
+      setAmount("");
+      setRecipientId("");
+      setType("Deposit");
+    } catch (err) {
+      console.error("Transaction failed", err);
+      alert(err.response?.data || "Transaction failed");
     }
-
-    const newTx = {
-      type,
-      amount: parseFloat(amount),
-      date: new Date().toLocaleString(),
-      icon:
-        type === "Deposit"
-          ? <ArrowDownLeft className="tx-icon deposit" />
-          : type === "Withdrawal"
-          ? <ArrowUpRight className="tx-icon withdrawal" />
-          : <Send className="tx-icon transfer" />
-    };
-
-    setTransactions([newTx, ...transactions]); 
-    setShowModal(false);
-    setAmount("");
-    setRecipientId("");
-    setType("Deposit");
   };
 
   return (
     <div className="dashboard">
-  
       <aside className="sidebar">
         <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
         <ul className="sidebar-menu">
-  <li className="active">
-    <Link to="/dashboard">
-      <Home className="icon" /> Overview
-    </Link>
-  </li>
-  <li>
-    <Link to="/transactions">
-      <CreditCard className="icon" /> Transactions
-    </Link>
-  </li>
-  <li>
-    <Link to="/account">
-      <User className="icon" /> Account
-    </Link>
-  </li>
-  <li>
-    <Link to="/settings">
-      <Settings className="icon" /> Settings
-    </Link>
-  </li>
-</ul>
-
+          <li>
+            <Link to="/dashboard">
+              <Home className="icon" /> Overview
+            </Link>
+          </li>
+          <li className="active">
+            <Link to="/transactions">
+              <CreditCard className="icon" /> Transactions
+            </Link>
+          </li>
+          <li>
+            <Link to="/account">
+              <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/settings">
+              <Settings className="icon" /> Settings
+            </Link>
+          </li>
+        </ul>
       </aside>
 
- 
       <div className="main">
         <header className="header">
           <div className="header-right">
@@ -98,7 +149,6 @@ export default function Transactions() {
 
         <main className="content">
           <div className="content-box">
-       
             <div className="transactions-header">
               <h2>Transactions</h2>
               <div className="transactions-controls">
@@ -124,35 +174,36 @@ export default function Transactions() {
               </div>
             </div>
 
-        
-            <div className="transactions-list">
-              {transactions.map((tx, index) => (
-                <div key={index} className="transaction-row">
-                  <div className="tx-left">
-                    {tx.icon}
-                    <div className="tx-details">
-                      <span className="tx-type">{tx.type}</span>
-                      <span className="tx-date">{tx.date}</span>
+            {loading ? (
+              <p>Loading transactions...</p>
+            ) : (
+              <div className="transactions-list">
+                {transactions.map((tx, index) => (
+                  <div key={index} className="transaction-row">
+                    <div className="tx-left">
+                      {tx.icon}
+                      <div className="tx-details">
+                        <span className="tx-type">{tx.type}</span>
+                        <span className="tx-date">{tx.date}</span>
+                      </div>
+                    </div>
+                    <div className="tx-right">
+                      <span className="tx-amount">${tx.amount.toFixed(2)}</span>
+                      <span className="tx-menu">⋯</span>
                     </div>
                   </div>
-                  <div className="tx-right">
-                    <span className="tx-amount">${tx.amount.toFixed(2)}</span>
-                    <span className="tx-menu">⋯</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </main>
       </div>
 
-   
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <h2 className="modal-title">New Transaction</h2>
 
-        
             <label className="modal-label">Type:</label>
             <div className="tx-type-buttons">
               <button
@@ -175,7 +226,6 @@ export default function Transactions() {
               </button>
             </div>
 
-      
             <label className="modal-label">Amount:</label>
             <input
               type="number"
@@ -185,7 +235,6 @@ export default function Transactions() {
               placeholder="Enter amount"
             />
 
-          
             {type === "Transfer" && (
               <>
                 <label className="modal-label">Recipient ID:</label>
@@ -199,10 +248,13 @@ export default function Transactions() {
               </>
             )}
 
-     
             <div className="modal-buttons">
-              <button className="modal-btn confirm" onClick={handleTransaction}>Submit</button>
-              <button className="modal-btn cancel" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="modal-btn confirm" onClick={handleTransaction}>
+                Submit
+              </button>
+              <button className="modal-btn cancel" onClick={() => setShowModal(false)}>
+                Cancel
+              </button>
             </div>
           </div>
         </div>

@@ -1,14 +1,43 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import AdminLayout from "./AdminLayout";
 import { ArrowDownLeft, ArrowUpRight, Send } from "lucide-react";
 
 export default function AdminTransactions() {
-  const transactions = [
-    { id: 1, type: "Deposit", amount: "$500", user: "John Doe", date: "2025-07-01" },
-    { id: 2, type: "Withdrawal", amount: "$200", user: "Jane Smith", date: "2025-07-02" },
-    { id: 3, type: "Transfer", amount: "$300", user: "Alice Johnson", date: "2025-07-03" },
-  ];
+  const [transactions, setTransactions] = useState([]);
+  const token = localStorage.getItem("token");
 
-  // helper to return correct class for text color
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/admin/recent-transactions?limit=50",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const mapped = res.data.map((t) => ({
+          id: t.id,
+          type: t.type
+            ? t.type.charAt(0).toUpperCase() + t.type.slice(1).toLowerCase()
+            : "",
+          amount: `$${Number(t.amount).toLocaleString()}`,
+          user: t.user
+            ? `${t.user.firstName || ""} ${t.user.lastName || ""}`.trim()
+            : "Unknown User",
+          date: t.timestamp
+            ? new Date(t.timestamp).toLocaleString()
+            : "No date available",
+        }));
+
+        setTransactions(mapped);
+      } catch (err) {
+        console.error("Error fetching transactions", err);
+      }
+    };
+
+    fetchTransactions();
+  }, [token]); 
+
   const getTypeClass = (type) => {
     switch (type) {
       case "Deposit":
@@ -22,7 +51,6 @@ export default function AdminTransactions() {
     }
   };
 
-  // helper to return correct icon
   const getIcon = (type) => {
     switch (type) {
       case "Deposit":
@@ -39,31 +67,33 @@ export default function AdminTransactions() {
   return (
     <AdminLayout>
       <h1 className="textColor">Transactions</h1>
-      <table className="admin-table">
-        <thead>
-          <tr>
-            <th>User</th>
-            <th>Type</th>
-            <th>Amount</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((t) => (
-            <tr key={t.id}>
-              <td>{t.user}</td>
-              <td className={getTypeClass(t.type)}>
-                <span className="type-cell">
-                  {getIcon(t.type)}
-                  {t.type}
-                </span>
-              </td>
-              <td>{t.amount}</td>
-              <td>{t.date}</td>
+      <div style={{ maxHeight: "800px", overflowY: "auto" }}>
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map((t) => (
+              <tr key={t.id}>
+                <td>{t.user}</td>
+                <td className={getTypeClass(t.type)}>
+                  <span className="type-cell">
+                    {getIcon(t.type)}
+                    {t.type}
+                  </span>
+                </td>
+                <td>{t.amount}</td>
+                <td>{t.date}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </AdminLayout>
   );
 }
