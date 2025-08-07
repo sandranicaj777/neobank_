@@ -4,9 +4,12 @@ import { Home, CreditCard, User, Settings } from "lucide-react";
 import axios from "axios";
 import "./Dashboard.css";
 import "./Account.css";
+import "./LightMode.css"; // ← Add this line if not present
 
 export default function EditProfile() {
   const navigate = useNavigate();
+
+  const [darkMode, setDarkMode] = useState(true);
 
   const [user, setUser] = useState({
     firstName: "Derrick",
@@ -19,6 +22,11 @@ export default function EditProfile() {
     postalCode: "",
     country: "",
   });
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") setDarkMode(false);
+  }, []);
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
@@ -60,9 +68,13 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${darkMode ? "" : "light-mode"}`}>
       <aside className="sidebar">
-        <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
+        <img
+          src={darkMode ? "/logo.png" : "/darkModeLogo.png"}
+          alt="NeoBank Logo"
+          className="sidebar-logo-img"
+        />
         <ul className="sidebar-menu">
           <li className="active">
             <Link to="/dashboard">

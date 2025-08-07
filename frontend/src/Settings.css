@@ -1,4 +1,3 @@
-/* === YOUR EXISTING CODE === */
 .settings-title {
     color: #a78bfa;
     font-size: 1.8rem;
@@ -53,7 +52,7 @@
     background: linear-gradient(135deg, #5a189a, #9d4edd);
 }
 
-/* === TOGGLE SWITCH === */
+
 .toggle {
     display: flex;
     align-items: center;
@@ -92,7 +91,7 @@
     transform: translateX(22px);
 }
 
-/* === MODAL STYLES === */
+
 .modal-overlay {
     position: fixed;
     top: 0;

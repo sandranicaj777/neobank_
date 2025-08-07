@@ -735,3 +735,7 @@
   letter-spacing: 2px;
 }
 
+.modal-card-back:hover {
+  filter: brightness(0.9);
+  cursor: pointer;
+}

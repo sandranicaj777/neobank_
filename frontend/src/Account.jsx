@@ -1,14 +1,33 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Eye, EyeOff, Home, CreditCard, User, Settings, Bell } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Home,
+  CreditCard,
+  User,
+  Settings as SettingsIcon,
+  Bell,
+} from "lucide-react";
 import "./Dashboard.css";
 import "./Account.css";
+import "./LightMode.css"; // ⬅️ Import light mode
 
 export default function Account() {
   const [showPassword, setShowPassword] = useState(false);
   const [user, setUser] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") setDarkMode(false);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -37,9 +56,13 @@ export default function Account() {
   if (!user) return <p>Loading...</p>;
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${darkMode ? "" : "light-mode"}`}>
       <aside className="sidebar">
-        <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
+        <img
+          src={darkMode ? "/logo.png" : "/darkModeLogo.png"}
+          alt="NeoBank Logo"
+          className="sidebar-logo-img"
+        />
         <ul className="sidebar-menu">
           <li>
             <Link to="/dashboard">
@@ -58,18 +81,19 @@ export default function Account() {
           </li>
           <li>
             <Link to="/settings">
-              <Settings className="icon" /> Settings
+              <SettingsIcon className="icon" /> Settings
             </Link>
           </li>
         </ul>
       </aside>
 
       <div className="main">
-      <header className="header">
-    <div className="header-right">
-      <Bell className="notif-icon" />
-    </div>
-  </header>
+        <header className="header">
+          <div className="header-right">
+            <Bell className="notif-icon" />
+          </div>
+        </header>
+
         <main className="content">
           <div className="content-box">
             <h1 className="account-title">Welcome, {user.firstName}</h1>
@@ -91,15 +115,15 @@ export default function Account() {
               </div>
 
               <div className="account-field password-field">
-  <label>Password:</label>
-  <p>{showPassword ? user.password || "No bueno :)" : "••••••••"}</p>
-  <button
-    onClick={() => setShowPassword(!showPassword)}
-    className="eye-btn"
-  >
-    {showPassword ? <EyeOff /> : <Eye />}
-  </button>
-</div>
+                <label>Password:</label>
+                <p>{showPassword ? user.password || "No bueno :)" : "••••••••"}</p>
+                <button
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="eye-btn"
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
 
               <div className="account-field">
                 <label>Phone Number:</label>

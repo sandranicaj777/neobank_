@@ -1,9 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 import "./Settings.css";
-import { Home, CreditCard, User, Settings as SettingsIcon, Bell, Lock, BellRing, Shield, Cog } from "lucide-react";
+import "./LightMode.css"; 
+import {
+  Home,
+  CreditCard,
+  User,
+  Settings as SettingsIcon,
+  Bell,
+  Lock,
+  BellRing,
+  Shield,
+  Cog,
+} from "lucide-react";
 
 export default function Settings() {
   const [showModal, setShowModal] = useState(false);
@@ -11,7 +22,19 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [darkMode, setDarkMode] = useState(true); 
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") setDarkMode(false);
+  }, []);
+
+ 
+  useEffect(() => {
+    localStorage.setItem("theme", darkMode ? "dark" : "light");
+  }, [darkMode]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -29,17 +52,14 @@ export default function Settings() {
       const token = localStorage.getItem("token");
       await axios.patch(
         "http://localhost:8080/auth/change-password",
-        {
-          oldPassword,
-          newPassword,
-        },
+        { oldPassword, newPassword },
         {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         }
-      );      
+      );
       setMessage("Password changed successfully");
       setOldPassword("");
       setNewPassword("");
@@ -52,9 +72,13 @@ export default function Settings() {
   };
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${darkMode ? "" : "light-mode"}`}>
       <aside className="sidebar">
-        <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
+        <img
+          src={darkMode ? "/logo.png" : "/darkModeLogo.png"}
+          alt="NeoBank Logo"
+          className="sidebar-logo-img"
+        />
 
         <ul className="sidebar-menu">
           <li className="active">
@@ -90,8 +114,12 @@ export default function Settings() {
         <main className="content">
           <div className="content-box settings-box">
             <div className="settings-section">
-              <h3><Lock className="section-icon" /> Security</h3>
-              <button className="settings-btn" onClick={() => setShowModal(true)}>Change Password</button>
+              <h3>
+                <Lock className="section-icon" /> Security
+              </h3>
+              <button className="settings-btn" onClick={() => setShowModal(true)}>
+                Change Password
+              </button>
               <label className="toggle">
                 <input type="checkbox" />
                 <span className="slider"></span> Enable 2FA
@@ -99,7 +127,9 @@ export default function Settings() {
             </div>
 
             <div className="settings-section">
-              <h3><BellRing className="section-icon" /> Notifications</h3>
+              <h3>
+                <BellRing className="section-icon" /> Notifications
+              </h3>
               <label className="toggle">
                 <input type="checkbox" defaultChecked />
                 <span className="slider"></span> Email Alerts
@@ -111,18 +141,28 @@ export default function Settings() {
             </div>
 
             <div className="settings-section">
-              <h3><Cog className="section-icon" /> Preferences</h3>
+              <h3>
+                <Cog className="section-icon" /> Preferences
+              </h3>
               <label className="toggle">
-                <input type="checkbox" defaultChecked />
+                <input
+                  type="checkbox"
+                  checked={darkMode}
+                  onChange={() => setDarkMode(!darkMode)}
+                />
                 <span className="slider"></span> Dark Mode
               </label>
             </div>
 
             <div className="settings-section">
-              <h3><Shield className="section-icon" /> Privacy</h3>
+              <h3>
+                <Shield className="section-icon" /> Privacy
+              </h3>
               <button className="settings-btn">Download My Data</button>
               <div>
-                <button className="danger" onClick={handleLogout}>Logout</button>
+                <button className="danger" onClick={handleLogout}>
+                  Logout
+                </button>
               </div>
             </div>
           </div>
@@ -153,11 +193,24 @@ export default function Settings() {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
-            {message && <p style={{ marginTop: "10px", color: "white" }}>{message}</p>}
+            {message && (
+              <p
+                style={{
+                  marginTop: "10px",
+                  color: darkMode ? "white" : "#222",
+                }}
+              >
+                {message}
+              </p>
+            )}
 
             <div className="modal-actions">
-              <button className="modal-btn cancel" onClick={() => setShowModal(false)}>Cancel</button>
-              <button className="modal-btn save" onClick={handlePasswordChange}>Save</button>
+              <button className="modal-btn cancel" onClick={() => setShowModal(false)}>
+                Cancel
+              </button>
+              <button className="modal-btn save" onClick={handlePasswordChange}>
+                Save
+              </button>
             </div>
           </div>
         </div>

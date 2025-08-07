@@ -20,30 +20,33 @@ import {
   CartesianGrid,
 } from "recharts";
 import "./Dashboard.css";
+import "./LightMode.css"; // make sure this is included
 
 export default function Dashboard() {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
-
   const [transactions, setTransactions] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [balance, setBalance] = useState(0);
-
   const [cards, setCards] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showCardBack, setShowCardBack] = useState(false);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [cvc, setCvc] = useState("");
+  const [theme, setTheme] = useState("dark");
 
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // Fetch everything on load
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") setTheme("light");
+  }, []);
+
   useEffect(() => {
     if (!user || !token) return;
 
-    // Notifications
     fetch("http://localhost:8080/api/notifications", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -54,7 +57,6 @@ export default function Dashboard() {
       })
       .catch((err) => console.error("Error fetching notifications:", err));
 
-    // Transactions
     fetch(`http://localhost:8080/api/transactions/user/${user.id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -84,24 +86,25 @@ export default function Dashboard() {
           );
         });
 
-        const chartPoints = todaysSpending
-          .map((tx) => ({
-            time: new Date(tx.timestamp).toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            amount: Number(tx.amount),
-          }))
-          .sort((a, b) =>
-            new Date(`1970/01/01 ${a.time}`) -
-            new Date(`1970/01/01 ${b.time}`)
-          );
+        let chartPoints = todaysSpending.map((tx) => ({
+          time: new Date(tx.timestamp).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          amount: Number(tx.amount),
+        }));
+
+        if (chartPoints.length === 1) {
+          chartPoints.push({
+            ...chartPoints[0],
+            time: chartPoints[0].time + " ",
+          });
+        }
 
         setChartData(chartPoints);
       })
       .catch((err) => console.error("Error fetching transactions:", err));
 
-    // Balance
     fetch("http://localhost:8080/api/auth/me", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -113,7 +116,6 @@ export default function Dashboard() {
       })
       .catch((err) => console.error("Error fetching balance:", err));
 
-    // Cards
     fetch("http://localhost:8080/api/cards", {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -158,9 +160,13 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${theme === "light" ? "light-mode" : ""}`}>
       <aside className="sidebar">
-        <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
+        <img
+          src={theme === "light" ? "/DarkModeLogo.png" : "/logo.png"}
+          alt="NeoBank Logo"
+          className="sidebar-logo-img"
+        />
         <ul className="sidebar-menu">
           <li className="active">
             <Link to="/dashboard">
@@ -203,9 +209,7 @@ export default function Dashboard() {
                   notifications.map((n) => (
                     <div
                       key={n.id}
-                      className={`notification-item ${
-                        n.read ? "read" : ""
-                      }`}
+                      className={`notification-item ${n.read ? "read" : ""}`}
                     >
                       {n.message}
                     </div>
@@ -220,7 +224,6 @@ export default function Dashboard() {
           <div className="content-box">
             <div className="dashboard-layout">
               <div className="left-side">
-                {/* Transactions */}
                 <div className="transactions">
                   <h2>
                     Recent Transactions{" "}
@@ -264,7 +267,6 @@ export default function Dashboard() {
                   </div>
                 </div>
 
-                {/* Virtual Cards */}
                 <div className="virtualCards">
                   <h2 className="vcH2">Virtual Cards</h2>
                   <div className="cards-carousel">
@@ -292,14 +294,15 @@ export default function Dashboard() {
                         <div className="card-info">
                           <div>
                             <span className="label">CARD HOLDER</span>
-                            <h4>
-                              {user?.firstName + " " + user?.lastName}
-                            </h4>
+                            <h4>{user?.firstName + " " + user?.lastName}</h4>
                             <span>
                               Expires:{" "}
                               {new Date(card.expiryDate).toLocaleDateString(
                                 "en-US",
-                                { month: "2-digit", year: "2-digit" }
+                                {
+                                  month: "2-digit",
+                                  year: "2-digit",
+                                }
                               )}
                             </span>
                           </div>
@@ -312,7 +315,6 @@ export default function Dashboard() {
                       </div>
                     ))}
 
-                    {/* Add New Card */}
                     <div
                       className="virtual-card add-card"
                       onClick={() => setShowAddModal(true)}
@@ -324,17 +326,13 @@ export default function Dashboard() {
                 </div>
               </div>
 
-              {/* Chart & Balance */}
               <div className="right-side">
                 <div className="chart-box">
                   <h2>Spent This Day</h2>
                   {chartData.length > 0 ? (
                     <ResponsiveContainer width="100%" height={400}>
                       <LineChart data={chartData}>
-                        <CartesianGrid
-                          strokeDasharray="3 3"
-                          stroke="#2a2a2a"
-                        />
+                        <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
                         <XAxis dataKey="time" stroke="#aaa" />
                         <YAxis stroke="#aaa" />
                         <Tooltip
@@ -356,9 +354,7 @@ export default function Dashboard() {
                       </LineChart>
                     </ResponsiveContainer>
                   ) : (
-                    <div className="chart-placeholder">
-                      No spending today
-                    </div>
+                    <div className="chart-placeholder">No spending today</div>
                   )}
                 </div>
 
@@ -381,7 +377,6 @@ export default function Dashboard() {
         </main>
       </div>
 
-      {/* Add Card Modal */}
       {showAddModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -401,13 +396,13 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Card Back Modal */}
       {showCardBack && (
         <div className="modal-overlay" onClick={() => setShowCardBack(false)}>
           <div
             className="modal-card-back"
             style={{
-              background: cardColors[selectedCardIndex % cardColors.length],
+              background:
+                cardColors[selectedCardIndex % cardColors.length],
             }}
             onClick={(e) => e.stopPropagation()}
           >

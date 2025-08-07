@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "./Dashboard.css";
-import "./Transactions.css";
 import {
   Home,
   CreditCard,
@@ -12,8 +10,11 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Send,
-  Search
+  Search,
 } from "lucide-react";
+import "./Dashboard.css";
+import "./Transactions.css";
+import "./LightMode.css"; // ✅ Import for light mode
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -22,9 +23,16 @@ export default function Transactions() {
   const [amount, setAmount] = useState("");
   const [recipientId, setRecipientId] = useState("");
   const [loading, setLoading] = useState(true);
+  const [darkMode, setDarkMode] = useState(true); // ✅ Track theme
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
+
+  // Theme setup
+  useEffect(() => {
+    const saved = localStorage.getItem("theme");
+    if (saved === "light") setDarkMode(false);
+  }, []);
 
   // Fetch transactions from backend
   useEffect(() => {
@@ -41,15 +49,16 @@ export default function Transactions() {
           }
         );
 
-        // Map backend response to include correct icons
         const mappedTransactions = res.data.map((tx) => ({
           ...tx,
           icon:
-            tx.type === "DEPOSIT"
-              ? <ArrowDownLeft className="tx-icon deposit" />
-              : tx.type === "WITHDRAWAL"
-              ? <ArrowUpRight className="tx-icon withdrawal" />
-              : <Send className="tx-icon transfer" />,
+            tx.type === "DEPOSIT" ? (
+              <ArrowDownLeft className="tx-icon deposit" />
+            ) : tx.type === "WITHDRAWAL" ? (
+              <ArrowUpRight className="tx-icon withdrawal" />
+            ) : (
+              <Send className="tx-icon transfer" />
+            ),
           date: new Date(tx.timestamp).toLocaleString(),
         }));
 
@@ -64,7 +73,6 @@ export default function Transactions() {
     fetchTransactions();
   }, [user, token]);
 
-  // Handle creating a new transaction
   const handleTransaction = async () => {
     if (!amount || parseFloat(amount) <= 0) {
       alert("Enter a valid amount");
@@ -93,11 +101,13 @@ export default function Transactions() {
       const newTx = {
         ...res.data,
         icon:
-          res.data.type === "DEPOSIT"
-            ? <ArrowDownLeft className="tx-icon deposit" />
-            : res.data.type === "WITHDRAWAL"
-            ? <ArrowUpRight className="tx-icon withdrawal" />
-            : <Send className="tx-icon transfer" />,
+          res.data.type === "DEPOSIT" ? (
+            <ArrowDownLeft className="tx-icon deposit" />
+          ) : res.data.type === "WITHDRAWAL" ? (
+            <ArrowUpRight className="tx-icon withdrawal" />
+          ) : (
+            <Send className="tx-icon transfer" />
+          ),
         date: new Date(res.data.timestamp).toLocaleString(),
       };
 
@@ -113,9 +123,13 @@ export default function Transactions() {
   };
 
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${darkMode ? "" : "light-mode"}`}>
       <aside className="sidebar">
-        <img src="/logo.png" alt="NeoBank Logo" className="sidebar-logo-img" />
+        <img
+          src={darkMode ? "/logo.png" : "/darkModeLogo.png"}
+          alt="NeoBank Logo"
+          className="sidebar-logo-img"
+        />
         <ul className="sidebar-menu">
           <li>
             <Link to="/dashboard">
