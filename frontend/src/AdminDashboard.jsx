@@ -5,7 +5,7 @@ import AdminLayout from "./AdminLayout";
 export default function AdminDashboard() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
-  const [recentTransactions, setRecentTransactions] = useState([]);
+  const [recentTransactions, setRecentTransactions] = useState(0);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -13,19 +13,19 @@ export default function AdminDashboard() {
 
     const fetchData = async () => {
       try {
-        // Fetch total balance
+ 
         const balanceRes = await axios.get("http://localhost:8080/admin/total-balance", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTotalBalance(balanceRes.data);
 
-        // Fetch total users from /api/users
+
         const usersRes = await axios.get("http://localhost:8080/api/users", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTotalUsers(usersRes.data.length);
 
-        // Fetch recent transactions
+
         const txRes = await axios.get("http://localhost:8080/admin/recent-transactions?limit=5", {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -42,7 +42,6 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       <h1 className="textColor">Welcome, Admin!</h1>
-      <p>Overview of the system.</p>
 
       <div className="admin-stats">
         <div className="stat-card">

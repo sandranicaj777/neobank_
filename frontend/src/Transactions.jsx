@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import "./Dashboard.css";
 import "./Transactions.css";
-import "./LightMode.css"; // ✅ Import for light mode
+import "./LightMode.css";
 
 export default function Transactions() {
   const [transactions, setTransactions] = useState([]);
@@ -23,18 +23,20 @@ export default function Transactions() {
   const [amount, setAmount] = useState("");
   const [recipientId, setRecipientId] = useState("");
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(true); // ✅ Track theme
+  const [darkMode, setDarkMode] = useState(true); 
+
+  // NEW: filter + search
+  const [filter, setFilter] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
   const token = localStorage.getItem("token");
 
-  // Theme setup
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved === "light") setDarkMode(false);
   }, []);
 
-  // Fetch transactions from backend
   useEffect(() => {
     if (!user || !token) return;
 
@@ -49,18 +51,25 @@ export default function Transactions() {
           }
         );
 
-        const mappedTransactions = res.data.map((tx) => ({
-          ...tx,
-          icon:
-            tx.type === "DEPOSIT" ? (
-              <ArrowDownLeft className="tx-icon deposit" />
-            ) : tx.type === "WITHDRAWAL" ? (
-              <ArrowUpRight className="tx-icon withdrawal" />
-            ) : (
-              <Send className="tx-icon transfer" />
-            ),
-          date: new Date(tx.timestamp).toLocaleString(),
-        }));
+        const mappedTransactions = res.data
+          .map((tx) => {
+            const ts = new Date(tx.timestamp).getTime(); // NEW: numeric timestamp for sorting
+            return {
+              ...tx,
+              description: tx.description || "", 
+              icon:
+                tx.type === "DEPOSIT" ? (
+                  <ArrowDownLeft className="tx-icon deposit" />
+                ) : tx.type === "WITHDRAWAL" ? (
+                  <ArrowUpRight className="tx-icon withdrawal" />
+                ) : (
+                  <Send className="tx-icon transfer" />
+                ),
+              date: new Date(ts).toLocaleString(),
+              ts, // NEW
+            };
+          })
+          .sort((a, b) => b.ts - a.ts); 
 
         setTransactions(mappedTransactions);
       } catch (err) {
@@ -98,8 +107,10 @@ export default function Transactions() {
         }
       );
 
+      const ts = new Date(res.data.timestamp).getTime(); 
       const newTx = {
         ...res.data,
+        description: res.data.description || "",
         icon:
           res.data.type === "DEPOSIT" ? (
             <ArrowDownLeft className="tx-icon deposit" />
@@ -108,10 +119,12 @@ export default function Transactions() {
           ) : (
             <Send className="tx-icon transfer" />
           ),
-        date: new Date(res.data.timestamp).toLocaleString(),
+        date: new Date(ts).toLocaleString(),
+        ts, 
       };
 
-      setTransactions([newTx, ...transactions]);
+   
+      setTransactions((prev) => [newTx, ...prev].sort((a, b) => b.ts - a.ts));
       setShowModal(false);
       setAmount("");
       setRecipientId("");
@@ -121,6 +134,25 @@ export default function Transactions() {
       alert(err.response?.data || "Transaction failed");
     }
   };
+
+
+  const displayedTransactions = transactions
+    .filter((tx) => {
+      if (filter === "all") return true;
+
+      return tx.type === filter.toUpperCase();
+    })
+    .filter((tx) => {
+      const q = searchQuery.trim().toLowerCase();
+      if (!q) return true;
+
+      return (
+        tx.type?.toLowerCase().includes(q) ||
+        tx.description?.toLowerCase().includes(q) ||
+        String(tx.amount)?.toLowerCase().includes(q) ||
+        tx.date?.toLowerCase().includes(q)
+      );
+    });
 
   return (
     <div className={`dashboard ${darkMode ? "" : "light-mode"}`}>
@@ -166,7 +198,11 @@ export default function Transactions() {
             <div className="transactions-header">
               <h2>Transactions</h2>
               <div className="transactions-controls">
-                <select className="transactions-filter">
+                <select
+                  className="transactions-filter"
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                >
                   <option value="all">All</option>
                   <option value="deposit">Deposits</option>
                   <option value="withdrawal">Withdrawals</option>
@@ -179,6 +215,8 @@ export default function Transactions() {
                     type="text"
                     className="transactions-search"
                     placeholder="Search transactions..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
 
@@ -192,7 +230,7 @@ export default function Transactions() {
               <p>Loading transactions...</p>
             ) : (
               <div className="transactions-list">
-                {transactions.map((tx, index) => (
+                {displayedTransactions.map((tx, index) => (
                   <div key={index} className="transaction-row">
                     <div className="tx-left">
                       {tx.icon}
