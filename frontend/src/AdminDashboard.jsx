@@ -5,7 +5,7 @@ import AdminLayout from "./AdminLayout";
 export default function AdminDashboard() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
-  const [recentTransactions, setRecentTransactions] = useState(0);
+  const [recentTransactions, setRecentTransactions] = useState([]);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -13,24 +13,22 @@ export default function AdminDashboard() {
 
     const fetchData = async () => {
       try {
- 
         const balanceRes = await axios.get("http://localhost:8080/admin/total-balance", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTotalBalance(balanceRes.data);
-
 
         const usersRes = await axios.get("http://localhost:8080/api/users", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setTotalUsers(usersRes.data.length);
 
-
-        const txRes = await axios.get("http://localhost:8080/admin/recent-transactions?limit=5", {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setRecentTransactions(txRes.data);
-
+  
+        const txRes = await axios.get(
+          "http://localhost:8080/admin/recent-transactions?limit=2147483647",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setRecentTransactions(txRes.data || []);
       } catch (err) {
         console.error("Error fetching admin data", err);
       }
