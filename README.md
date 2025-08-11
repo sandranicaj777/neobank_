@@ -150,15 +150,15 @@ If you change ports or origins, update CORS settings accordingly. !!!!
 
 
 Roadmap (V2 — “NEO Flow”)
-Trading module (stocks/crypto)
+-Trading module (stocks/crypto)
 
-Crypto price API integration
+-Crypto price API integration
 
-Backend integration tests and broader coverage
+-Backend integration tests and broader coverage
 
-Additional funding/payout flows and more robust limits/KYC (simulated)
+-Additional funding/payout flows and more robust limits/KYC (simulated)
 
-CI/CD and containerization
+-CI/CD and containerization
 
 ---------------------------------------------------------------------------------------------------------------------
 Thank you and enjoy :)
