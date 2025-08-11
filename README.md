@@ -1,4 +1,5 @@
 NEO Bank — Neutral Online Banking (V1)
+
 Hello and welcome to NEO Bank, a neutral online bank demo where you can deposit, withdraw, and transfer money with no fees. The project is inspired by Revolut, a European neobank known for fast onboarding, multi-currency accounts, card issuing, foreign exchange, and optional crypto/stock features. I built NEO Bank to practice full stack fintech development and to explore a simpler, lower fee experience.
 
 This is a learning project (Java + Spring Boot + React). Do not use real card numbers or personal data. !!!
