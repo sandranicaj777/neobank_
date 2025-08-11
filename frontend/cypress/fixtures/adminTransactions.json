@@ -1,0 +1,5 @@
+[
+  { "id": 1001, "type": "DEPOSIT",    "amount": 500, "timestamp": "2025-08-10T11:00:00.000Z", "user": { "firstName": "Derrick", "lastName": "Fisher" } },
+  { "id": 1002, "type": "WITHDRAWAL", "amount": 75,  "timestamp": "2025-08-11T08:00:00.000Z", "user": { "firstName": "Maya",    "lastName": "Lee"    } },
+  { "id": 1003, "type": "TRANSFER",   "amount": 25,  "timestamp": "2025-08-11T09:30:00.000Z", "user": { "firstName": "Sam",     "lastName": "Obrad"  } }
+]

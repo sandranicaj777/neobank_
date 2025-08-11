@@ -1,0 +1,5 @@
+[
+    { "id": 10, "message": "Welcome to NeoBank!", "read": false },
+    { "id": 11, "message": "Your card shipped.",  "read": false }
+  ]
+  

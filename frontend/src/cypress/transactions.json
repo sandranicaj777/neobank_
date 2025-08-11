@@ -1,0 +1,7 @@
+[
+    { "id": 1, "userId": 1, "type": "WITHDRAWAL", "amount": 50,  "description": "ATM",    "timestamp": "2025-08-10T09:00:00.000Z" },
+    { "id": 2, "userId": 1, "type": "DEPOSIT",    "amount": 200, "description": "Salary", "timestamp": "2025-08-11T10:30:00.000Z" },
+    { "id": 3, "userId": 1, "type": "TRANSFER",   "amount": 30,  "description": "Friend", "timestamp": "2025-08-09T15:00:00.000Z" },
+    { "id": 4, "userId": 1, "type": "DEPOSIT",    "amount": 120, "description": "Gift",   "timestamp": "2025-08-11T06:00:00.000Z" }
+  ]
+  

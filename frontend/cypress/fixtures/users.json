@@ -1,0 +1,6 @@
+[
+    { "id": 1, "firstName": "Derrick", "lastName": "Fisher", "email": "derrick@example.com", "status": "ACTIVE" },
+    { "id": 2, "firstName": "Maya",    "lastName": "Lee",    "email": "maya@example.com",    "status": "FROZEN" },
+    { "id": 3, "firstName": "Sam",     "lastName": "Obrad",  "email": "sam@example.com",     "status": "ACTIVE" }
+  ]
+  

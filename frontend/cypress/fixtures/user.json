@@ -1,0 +1,14 @@
+{
+    "id": 1,
+    "firstName": "Derrick",
+    "lastName": "Fisher",
+    "email": "derrick@example.com",
+    "password": "mySecret123",
+    "phoneNumber": "123456789",
+    "address": "123 Main St",
+    "city": "Podgorica",
+    "postalCode": "81000",
+    "country": "ME",
+    "balance": 1234.56
+  }
+  
