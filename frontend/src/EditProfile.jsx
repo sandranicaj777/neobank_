@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Home, CreditCard, User, Settings } from "lucide-react";
+import { Home, CreditCard, User, Settings, Coins } from "lucide-react";
 import axios from "axios";
 import "./Dashboard.css";
 import "./Account.css";
-import "./LightMode.css"; // ← Add this line if not present
+import "./LightMode.css";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ export default function EditProfile() {
       setUser((prev) => ({
         ...prev,
         ...storedUser,
-        password: "" // don't show password in form
+        password: "",
       }));
     }
   }, []);
@@ -59,7 +59,6 @@ export default function EditProfile() {
       );
 
       localStorage.setItem("user", JSON.stringify(res.data));
-      console.log("Updated user data:", res.data);
       navigate("/account");
     } catch (err) {
       console.error("Error updating profile:", err);
@@ -89,6 +88,11 @@ export default function EditProfile() {
           <li>
             <Link to="/account">
               <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/crypto">
+              <Coins className="icon" /> Crypto
             </Link>
           </li>
           <li>

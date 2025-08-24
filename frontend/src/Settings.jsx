@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import "./Dashboard.css";
 import "./Settings.css";
-import "./LightMode.css"; 
+import "./LightMode.css";
 import {
   Home,
   CreditCard,
@@ -14,6 +14,7 @@ import {
   BellRing,
   Shield,
   Cog,
+  Coins,
 } from "lucide-react";
 
 export default function Settings() {
@@ -22,16 +23,14 @@ export default function Settings() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [darkMode, setDarkMode] = useState(true); 
+  const [darkMode, setDarkMode] = useState(true);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const saved = localStorage.getItem("theme");
     if (saved === "light") setDarkMode(false);
   }, []);
 
- 
   useEffect(() => {
     localStorage.setItem("theme", darkMode ? "dark" : "light");
   }, [darkMode]);
@@ -94,6 +93,11 @@ export default function Settings() {
           <li>
             <Link to="/account">
               <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/crypto">
+              <Coins className="icon" /> Crypto
             </Link>
           </li>
           <li>

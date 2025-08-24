@@ -11,6 +11,7 @@ import AdminDashboard from "./AdminDashboard";
 import AdminUsers from "./AdminUsers";
 import AdminTransactions from "./AdminTransactions";
 import AdminReports from "./AdminReports";
+import Crypto from "./Crypto";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/transactions" element={<AdminTransactions />} />
         <Route path="/admin/reports" element={<AdminReports />} />   
+        <Route path="/crypto" element={<Crypto />} />
       </Routes>
     </Router>
   );

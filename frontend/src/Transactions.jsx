@@ -11,6 +11,7 @@ import {
   ArrowUpRight,
   Send,
   Search,
+  Coins,
 } from "lucide-react";
 import "./Dashboard.css";
 import "./Transactions.css";
@@ -23,9 +24,7 @@ export default function Transactions() {
   const [amount, setAmount] = useState("");
   const [recipientId, setRecipientId] = useState("");
   const [loading, setLoading] = useState(true);
-  const [darkMode, setDarkMode] = useState(true); 
-
-  // NEW: filter + search
+  const [darkMode, setDarkMode] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -53,10 +52,10 @@ export default function Transactions() {
 
         const mappedTransactions = res.data
           .map((tx) => {
-            const ts = new Date(tx.timestamp).getTime(); // NEW: numeric timestamp for sorting
+            const ts = new Date(tx.timestamp).getTime();
             return {
               ...tx,
-              description: tx.description || "", 
+              description: tx.description || "",
               icon:
                 tx.type === "DEPOSIT" ? (
                   <ArrowDownLeft className="tx-icon deposit" />
@@ -66,10 +65,10 @@ export default function Transactions() {
                   <Send className="tx-icon transfer" />
                 ),
               date: new Date(ts).toLocaleString(),
-              ts, // NEW
+              ts,
             };
           })
-          .sort((a, b) => b.ts - a.ts); 
+          .sort((a, b) => b.ts - a.ts);
 
         setTransactions(mappedTransactions);
       } catch (err) {
@@ -107,7 +106,7 @@ export default function Transactions() {
         }
       );
 
-      const ts = new Date(res.data.timestamp).getTime(); 
+      const ts = new Date(res.data.timestamp).getTime();
       const newTx = {
         ...res.data,
         description: res.data.description || "",
@@ -120,10 +119,9 @@ export default function Transactions() {
             <Send className="tx-icon transfer" />
           ),
         date: new Date(ts).toLocaleString(),
-        ts, 
+        ts,
       };
 
-   
       setTransactions((prev) => [newTx, ...prev].sort((a, b) => b.ts - a.ts));
       setShowModal(false);
       setAmount("");
@@ -135,17 +133,14 @@ export default function Transactions() {
     }
   };
 
-
   const displayedTransactions = transactions
     .filter((tx) => {
       if (filter === "all") return true;
-
       return tx.type === filter.toUpperCase();
     })
     .filter((tx) => {
       const q = searchQuery.trim().toLowerCase();
       if (!q) return true;
-
       return (
         tx.type?.toLowerCase().includes(q) ||
         tx.description?.toLowerCase().includes(q) ||
@@ -176,6 +171,11 @@ export default function Transactions() {
           <li>
             <Link to="/account">
               <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/crypto">
+              <Coins className="icon" /> Crypto
             </Link>
           </li>
           <li>

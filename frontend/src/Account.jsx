@@ -9,10 +9,11 @@ import {
   User,
   Settings as SettingsIcon,
   Bell,
+  Coins,
 } from "lucide-react";
 import "./Dashboard.css";
 import "./Account.css";
-import "./LightMode.css"; // ⬅️ Import light mode
+import "./LightMode.css";
 
 export default function Account() {
   const [showPassword, setShowPassword] = useState(false);
@@ -77,6 +78,11 @@ export default function Account() {
           <li className="active">
             <Link to="/account">
               <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/crypto">
+              <Coins className="icon" /> Crypto
             </Link>
           </li>
           <li>

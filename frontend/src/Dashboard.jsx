@@ -9,6 +9,7 @@ import {
   ArrowDownLeft,
   ArrowUpRight,
   Send,
+  Coins,
 } from "lucide-react";
 import {
   LineChart,
@@ -20,7 +21,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import "./Dashboard.css";
-import "./LightMode.css"; // make sure this is included
+import "./LightMode.css";
 
 export default function Dashboard() {
   const [notifications, setNotifications] = useState([]);
@@ -181,6 +182,11 @@ export default function Dashboard() {
           <li>
             <Link to="/account">
               <User className="icon" /> Account
+            </Link>
+          </li>
+          <li>
+            <Link to="/crypto">
+              <Coins className="icon" /> Crypto
             </Link>
           </li>
           <li>
@@ -401,8 +407,7 @@ export default function Dashboard() {
           <div
             className="modal-card-back"
             style={{
-              background:
-                cardColors[selectedCardIndex % cardColors.length],
+              background: cardColors[selectedCardIndex % cardColors.length],
             }}
             onClick={(e) => e.stopPropagation()}
           >
