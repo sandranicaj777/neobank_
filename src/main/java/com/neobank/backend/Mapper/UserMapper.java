@@ -57,6 +57,7 @@ public class UserMapper {
                 .lastName(request.getLastName())
                 .email(request.getEmail())
                 .password(request.getPassword())
+                .phoneNumber(request.getPhoneNumber())
                 .role(Role.USER)
                 .isVerified(false)
                 .balance(BigDecimal.ZERO)
